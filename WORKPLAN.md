@@ -670,15 +670,15 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 0 — Project Setup
 
-- [ ] **M0-01** Initialize Git repo, create folder structure as per architecture above
-- [ ] **M0-02** Backend: `npm init`, install deps: `express pg bcrypt jsonwebtoken crypto uuid dotenv express-rate-limit multer sharp cors helmet morgan`
-- [ ] **M0-03** Frontend: `npm create vite@latest frontend -- --template react`, install: `axios zustand react-router-dom lucide-react`
-- [ ] **M0-04** Create `.env.example` with all required variables (DB_URL, JWT_SECRET, SMS_API_KEY, UPLOAD_PATH, etc.)
-- [ ] **M0-05** Create `backend/src/config/constants.js` — all enums, price bands, timeouts
-- [ ] **M0-06** Create `database/schema.sql` with all 13 migration files as one reference file
-- [ ] **M0-07** Set up PostgreSQL locally; run schema; verify all tables and trigger exist
-- [ ] **M0-08** Create `design-system/tokens.css` with all CSS custom properties
-- [ ] **M0-09** Commit: "chore: project scaffold and schema"
+- ✅ DONE **M0-01** Initialize Git repo, create folder structure as per architecture above
+- ✅ DONE **M0-02** Backend: `npm init`, install deps: `express pg bcrypt jsonwebtoken crypto uuid dotenv express-rate-limit multer sharp cors helmet morgan`
+- ✅ DONE **M0-03** Frontend: `npm create vite@latest frontend -- --template react`, install: `axios zustand react-router-dom lucide-react`
+- ✅ DONE **M0-04** Create `.env.example` with all required variables (DB_URL, JWT_SECRET, SMS_API_KEY, UPLOAD_PATH, etc.)
+- ✅ DONE **M0-05** Create `backend/src/config/constants.js` — all enums, price bands, timeouts
+- ✅ DONE **M0-06** Create `database/schema.sql` with all 13 migration files as one reference file
+- [ ] **M0-07** Set up PostgreSQL locally; run schema; verify all tables and trigger exist ← **PENDING: Install PostgreSQL, then run `node migrate.js`**
+- ✅ DONE **M0-08** Create `design-system/tokens.css` with all CSS custom properties
+- ✅ DONE **M0-09** Commit: "chore: project scaffold and schema"
 
 ---
 
