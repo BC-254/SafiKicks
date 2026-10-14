@@ -1,0 +1,262 @@
+/* ================================================================
+   tokens.css — Design System Custom Properties
+   Apple-like aesthetic: clean, white, minimal, purposeful.
+   Import this file FIRST in main.jsx / index.css.
+   
+   Rules:
+   - Never use hardcoded hex colors in component CSS
+   - Always reference these var() tokens
+   - No gradients, no neon, no glassmorphism
+   ================================================================ */
+
+:root {
+  /* ── Color: Backgrounds ──────────────────────────────────── */
+  --color-bg:               #F5F5F7;   /* Page background */
+  --color-surface:          #FFFFFF;   /* Cards, panels, modals */
+  --color-surface-secondary:#FAFAFA;   /* Alternate rows, nested surfaces */
+  --color-surface-elevated: #FFFFFF;   /* Modals, dropdowns (with shadow) */
+
+  /* ── Color: Borders ──────────────────────────────────────── */
+  --color-border:           #E5E5EA;   /* Standard border */
+  --color-border-light:     #F2F2F7;   /* Subtle dividers */
+  --color-border-focus:     #0071E3;   /* Input focus ring */
+
+  /* ── Color: Text ─────────────────────────────────────────── */
+  --color-text-primary:     #1D1D1F;   /* Main content */
+  --color-text-secondary:   #6E6E73;   /* Labels, meta, placeholders */
+  --color-text-tertiary:    #AEAEB2;   /* Disabled, hints */
+  --color-text-inverse:     #FFFFFF;   /* Text on dark backgrounds */
+
+  /* ── Color: Accent (use sparingly — CTAs only) ───────────── */
+  --color-accent:           #0071E3;
+  --color-accent-hover:     #0077ED;
+  --color-accent-active:    #006BDC;
+  --color-accent-subtle:    #E8F1FB;   /* Tinted backgrounds */
+
+  /* ── Color: Semantic ─────────────────────────────────────── */
+  --color-danger:           #FF3B30;
+  --color-danger-hover:     #E0352B;
+  --color-danger-subtle:    #FFF1F0;
+  --color-success:          #34C759;
+  --color-success-subtle:   #F0FDF4;
+  --color-warning:          #FF9500;
+  --color-warning-subtle:   #FFFBEB;
+  --color-info:             #5AC8FA;
+  --color-info-subtle:      #EFF9FF;
+
+  /* ── Color: Status Badges (desaturated, readable) ────────── */
+  --status-registered-bg:   #F2F2F7;
+  --status-registered-text: #48484A;
+  --status-queue-bg:        #E8F4FD;
+  --status-queue-text:      #0A6FA6;
+  --status-awaiting-bg:     #FFF3E0;
+  --status-awaiting-text:   #B35A00;
+  --status-started-bg:      #E3F8F0;
+  --status-started-text:    #1A7A4C;
+  --status-hold-bg:         #FFF0E6;
+  --status-hold-text:       #A0400A;
+  --status-completed-bg:    #E8FBF0;
+  --status-completed-text:  #1B6B3A;
+  --status-picked-bg:       #F3E8FF;
+  --status-picked-text:     #6B21A8;
+  --status-expired-bg:      #F2F2F7;
+  --status-expired-text:    #636366;
+  --status-cancelled-bg:    #FFF1F0;
+  --status-cancelled-text:  #B91C1C;
+  --status-abandoned-bg:    #FFF0E6;
+  --status-abandoned-text:  #92400E;
+  --status-closed-bg:       #F2F2F7;
+  --status-closed-text:     #8E8E93;
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-family:        -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI',
+                         Roboto, Helvetica, Arial, sans-serif;
+  --font-family-mono:   'SF Mono', 'Fira Code', 'Courier New', monospace;
+
+  --font-size-xs:   11px;
+  --font-size-sm:   13px;
+  --font-size-base: 15px;
+  --font-size-md:   17px;
+  --font-size-lg:   22px;
+  --font-size-xl:   28px;
+  --font-size-2xl:  34px;
+  --font-size-3xl:  48px;
+
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  --line-height-tight:  1.2;
+  --line-height-snug:   1.4;
+  --line-height-base:   1.6;
+  --line-height-loose:  1.8;
+
+  --letter-spacing-tight:  -0.02em;
+  --letter-spacing-normal:  0em;
+  --letter-spacing-wide:    0.04em;
+  --letter-spacing-wider:   0.08em;
+
+  /* ── Spacing (8px grid) ──────────────────────────────────── */
+  --space-0:  0px;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  28px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ── Border Radius ───────────────────────────────────────── */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   18px;
+  --radius-xl:   24px;
+  --radius-2xl:  32px;
+  --radius-pill: 9999px;   /* fully rounded — used for buttons and badges */
+  --radius-full: 50%;      /* circles */
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm:  0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md:  0 2px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-xl:  0 16px 48px rgba(0, 0, 0, 0.16);
+  --shadow-focus: 0 0 0 3px rgba(0, 113, 227, 0.25);
+
+  /* ── Transitions ─────────────────────────────────────────── */
+  --transition-fast:   all 0.15s ease;
+  --transition-base:   all 0.2s ease;
+  --transition-slow:   all 0.35s ease;
+  --transition-spring: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Z-Index Scale ───────────────────────────────────────── */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-overlay: 100;
+  --z-modal:   200;
+  --z-toast:   300;
+  --z-tooltip: 400;
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  --sidebar-width:        240px;
+  --content-max-width:    1100px;
+  --customer-max-width:   480px;
+  --header-height:        60px;
+  --tab-bar-height:       80px;   /* mobile bottom tab bar */
+
+  /* ── Component-specific tokens ───────────────────────────── */
+  /* Inputs */
+  --input-border:        var(--color-border);
+  --input-border-hover:  #C7C7CC;
+  --input-border-focus:  var(--color-accent);
+  --input-bg:            var(--color-surface);
+  --input-radius:        var(--radius-md);
+  --input-padding:       12px 16px;
+  --input-font-size:     var(--font-size-base);
+
+  /* Buttons */
+  --btn-radius:          var(--radius-pill);
+  --btn-padding-sm:      6px 14px;
+  --btn-padding-md:      10px 22px;
+  --btn-padding-lg:      14px 32px;
+  --btn-font-weight:     var(--font-weight-semibold);
+  --btn-font-size:       var(--font-size-base);
+
+  /* Cards */
+  --card-radius:         var(--radius-lg);
+  --card-shadow:         var(--shadow-md);
+  --card-border:         1px solid var(--color-border-light);
+  --card-padding:        var(--space-6);
+}
+
+/* ── Global Reset ────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+}
+
+/* ── Typography Helpers ──────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-text-primary);
+}
+
+h1 { font-size: var(--font-size-2xl); }
+h2 { font-size: var(--font-size-xl); }
+h3 { font-size: var(--font-size-lg); }
+h4 { font-size: var(--font-size-md); }
+h5 { font-size: var(--font-size-base); }
+h6 { font-size: var(--font-size-sm); }
+
+p { line-height: var(--line-height-base); }
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+/* ── Scrollbar (minimal, macOS-like) ─────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover { background: #C7C7CC; }
+
+/* ── Focus visible (accessibility) ──────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Utility classes ─────────────────────────────────────────── */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-secondary  { color: var(--color-text-secondary); }
+.text-tertiary   { color: var(--color-text-tertiary); }
+.text-danger     { color: var(--color-danger); }
+.text-success    { color: var(--color-success); }
+.text-sm         { font-size: var(--font-size-sm); }
+.text-xs         { font-size: var(--font-size-xs); }
+.font-medium     { font-weight: var(--font-weight-medium); }
+.font-semibold   { font-weight: var(--font-weight-semibold); }
+.font-bold       { font-weight: var(--font-weight-bold); }
+.truncate        { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

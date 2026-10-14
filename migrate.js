@@ -1,0 +1,64 @@
+/**
+ * migrate.js — Database Setup Script
+ * 
+ * Usage (once PostgreSQL is installed and running):
+ *   1. Copy backend/.env.example → backend/.env and fill in your credentials
+ *   2. Create the database: createdb kelvin_shoe_repair  (or via pgAdmin)
+ *   3. Run: node backend/migrate.js
+ * 
+ * This script reads database/schema.sql and runs it against your DB.
+ * It is safe to run multiple times (uses IF NOT EXISTS + ON CONFLICT).
+ */
+
+'use strict';
+
+require('dotenv').config({ path: __dirname + '/backend/.env' });
+
+const { Client } = require('pg');
+const fs = require('fs');
+const path = require('path');
+
+const schemaPath = path.join(__dirname, 'database', 'schema.sql');
+
+async function migrate() {
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  try {
+    console.log('📦 Connecting to database...');
+    await client.connect();
+    console.log('✅ Connected.');
+
+    console.log('📄 Reading schema.sql...');
+    const sql = fs.readFileSync(schemaPath, 'utf8');
+
+    console.log('⚙️  Running schema...');
+    await client.query(sql);
+
+    console.log('\n✅ Migration complete! Tables created:');
+    const res = await client.query(`
+      SELECT tablename FROM pg_tables
+      WHERE schemaname = 'public'
+      ORDER BY tablename
+    `);
+    res.rows.forEach((r) => console.log('   •', r.tablename));
+
+    console.log('\n⚠️  IMPORTANT: The seed owner account uses a placeholder password hash.');
+    console.log('   Run this to generate a real hash, then update the users table:');
+    console.log("   node -e \"console.log(require('bcrypt').hashSync('YourPassword', 12))\"");
+    console.log('\n🚀 Ready to start the backend: cd backend && npm run dev\n');
+
+  } catch (err) {
+    console.error('\n❌ Migration failed:', err.message);
+    console.error('\nTroubleshooting:');
+    console.error('  1. Is PostgreSQL running? (check Services or pg_ctl status)');
+    console.error('  2. Does the database exist? Run: createdb kelvin_shoe_repair');
+    console.error('  3. Are DATABASE_URL credentials correct in backend/.env?');
+    process.exit(1);
+  } finally {
+    await client.end();
+  }
+}
+
+migrate();

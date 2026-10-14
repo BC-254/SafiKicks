@@ -103,7 +103,7 @@ function init() {
     setupEventListeners();
 }
 
-// --- WebSocket & Deriv API (MODERN FLOW) ---
+// --- WebSocket & Deriv API
 async function connectWS() {
     if (ws) {
         ws.onclose = null; // Prevent old ws from triggering reconnect
