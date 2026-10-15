@@ -16,6 +16,7 @@ import { LoginPage } from './views/auth/LoginPage';
 
 // Owner Views
 import { StaffPage } from './views/owner/StaffPage';
+import { CatalogPage } from './views/owner/CatalogPage';
 
 // Placeholder view helper for pending milestones
 function PlaceholderView({ title, milestone, role }) {
@@ -112,7 +113,7 @@ export default function App() {
             <Route path="reconciliation" element={<PlaceholderView title="Daily Cash Close" milestone="M11" role="Owner" />} />
             <Route path="reports" element={<PlaceholderView title="Revenue & SMS Analytics" milestone="M11" role="Owner" />} />
             <Route path="audit" element={<PlaceholderView title="Immutable Audit Trail" milestone="M12" role="Owner" />} />
-            <Route path="catalog" element={<PlaceholderView title="Service Catalog" milestone="M3" role="Owner" />} />
+            <Route path="catalog" element={<CatalogPage />} />
             <Route path="staff" element={<StaffPage />} />
           </Route>
 
