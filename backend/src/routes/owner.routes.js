@@ -8,9 +8,23 @@
 const express  = require('express');
 const router   = express.Router();
 
+const db = require('../config/db');
 const { authenticate, requireRole } = require('../middleware/auth');
-const { ROLES }  = require('../config/constants');
+const {
+  ROLES,
+  APPROVAL_DECISION,
+  APPROVAL_TYPE,
+  AUDIT_EVENT,
+  JOB_STATUS,
+} = require('../config/constants');
 const User       = require('../models/user');
+const Approval   = require('../models/approval');
+const Job        = require('../models/job');
+const Price      = require('../models/price');
+const ServiceCatalog = require('../models/serviceCatalog');
+const smsService = require('../services/sms.service');
+const { assertTransition } = require('../services/stateMachine');
+const { logEvent } = require('../models/auditLog');
 const logger     = require('../utils/logger');
 
 // All routes in this file require owner role
@@ -100,7 +114,6 @@ router.patch('/staff/:id', async (req, res, next) => {
 // SERVICE CATALOG MANAGEMENT (OWNER)
 // ================================================================
 
-const ServiceCatalog = require('../models/serviceCatalog');
 
 // ── GET /api/owner/catalog ────────────────────────────────────
 router.get('/catalog', async (req, res, next) => {
@@ -227,6 +240,260 @@ router.delete('/catalog/:id', async (req, res, next) => {
     });
 
     res.json({ message: 'Service successfully deactivated.', service: deleted });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ================================================================
+// OWNER APPROVALS (MILESTONE 10)
+// ================================================================
+
+// ── GET /api/owner/approvals ──────────────────────────────────
+// List pending owner approvals
+router.get('/approvals', async (req, res, next) => {
+  try {
+    const { type } = req.query;
+    const approvals = await Approval.getPending(type || null);
+    res.json({ approvals });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── POST /api/owner/approvals/:id/decide ───────────────────────
+// Owner approves or rejects an out-of-band price, override, or alternate ID
+router.post('/approvals/:id/decide', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { decision, reason } = req.body;
+
+    const validDecisions = [APPROVAL_DECISION.APPROVED, APPROVAL_DECISION.REJECTED];
+    if (!decision || !validDecisions.includes(decision)) {
+      return res.status(400).json({
+        error: `Decision must be either '${APPROVAL_DECISION.APPROVED}' or '${APPROVAL_DECISION.REJECTED}'.`,
+      });
+    }
+
+    if (decision === APPROVAL_DECISION.REJECTED && (!reason || !reason.trim())) {
+      return res.status(400).json({ error: 'Rejection reason is required.' });
+    }
+
+    const approval = await Approval.findById(id);
+    if (!approval) {
+      return res.status(404).json({ error: 'Approval request not found.' });
+    }
+
+    if (approval.decision) {
+      return res.status(400).json({ error: `This request has already been ${approval.decision}.` });
+    }
+
+    const job = await Job.findById(approval.job_id);
+    if (!job) {
+      return res.status(404).json({ error: 'Associated job not found.' });
+    }
+
+    let updatedApproval;
+    let priceVersion = null;
+
+    await db.withTransaction(async (client) => {
+      // 1. Record decision
+      updatedApproval = await Approval.recordDecision(
+        {
+          id,
+          decidedBy: req.user.id,
+          decision,
+          reason: reason?.trim() || null,
+        },
+        client
+      );
+
+      // 2. Handle specific approval types
+      if (approval.type === APPROVAL_TYPE.OUT_OF_BAND_PRICE) {
+        priceVersion = await Price.getLatestForJob(job.id, client);
+
+        if (decision === APPROVAL_DECISION.APPROVED) {
+          // Record owner approval on price version
+          if (priceVersion) {
+            await Price.recordOwnerApproval(
+              {
+                jobId: job.id,
+                versionNumber: priceVersion.version_number,
+                approvedBy: req.user.id,
+              },
+              client
+            );
+          }
+
+          // Transition job to 'Awaiting Confirmation'
+          assertTransition(job.status, JOB_STATUS.AWAITING_CONFIRMATION, req.user.role);
+
+          await client.query(
+            `UPDATE jobs
+             SET status = $1,
+                 updated_at = NOW()
+             WHERE id = $2`,
+            [JOB_STATUS.AWAITING_CONFIRMATION, job.id]
+          );
+
+          await logEvent({
+            jobId: job.id,
+            actorUserId: req.user.id,
+            actorLabel: req.user.name,
+            eventType: AUDIT_EVENT.APPROVAL_DECIDED,
+            oldValue: { status: job.status },
+            newValue: {
+              status: JOB_STATUS.AWAITING_CONFIRMATION,
+              decision,
+              amount: priceVersion?.amount,
+            },
+            notes: `Owner approved out-of-band price quote of KES ${priceVersion?.amount}. Customer notified.`,
+            client,
+          });
+        } else {
+          // Rejection
+          await logEvent({
+            jobId: job.id,
+            actorUserId: req.user.id,
+            actorLabel: req.user.name,
+            eventType: AUDIT_EVENT.APPROVAL_DECIDED,
+            newValue: { decision, reason },
+            notes: `Owner rejected out-of-band price quote of KES ${priceVersion?.amount}. Reason: ${reason}. Job held in queue for revised pricing.`,
+            client,
+          });
+        }
+      } else {
+        // Generic approval log
+        await logEvent({
+          jobId: job.id,
+          actorUserId: req.user.id,
+          actorLabel: req.user.name,
+          eventType: AUDIT_EVENT.APPROVAL_DECIDED,
+          newValue: { type: approval.type, decision, reason },
+          notes: `Owner decided approval request '${approval.type}': ${decision}.${reason ? ' Reason: ' + reason : ''}`,
+          client,
+        });
+      }
+    });
+
+    // Send SMS to customer only if price was approved (outside transaction)
+    if (
+      approval.type === APPROVAL_TYPE.OUT_OF_BAND_PRICE &&
+      decision === APPROVAL_DECISION.APPROVED &&
+      priceVersion &&
+      job.customer_phone
+    ) {
+      await smsService.sendPriceProposed(
+        job.customer_phone,
+        job.job_number,
+        priceVersion.amount,
+        job.access_token
+      );
+    }
+
+    logger.info('Owner approval decision recorded', {
+      approvalId: id,
+      jobId: job.id,
+      type: approval.type,
+      decision,
+    });
+
+    res.json({
+      success: true,
+      message: `Approval request ${decision} successfully.`,
+      approval: updatedApproval,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── POST /api/owner/pickup-override ───────────────────────────
+// Owner grants pickup without standard code and marks shoes picked in one step
+router.post('/pickup-override', async (req, res, next) => {
+  try {
+    const { job_id, reason } = req.body;
+
+    if (!job_id) {
+      return res.status(400).json({ error: 'Job ID is required.' });
+    }
+
+    if (!reason || !reason.trim()) {
+      return res.status(400).json({ error: 'Reason for owner pickup override is mandatory for audit trail.' });
+    }
+
+    const job = await Job.findById(job_id);
+    if (!job) {
+      return res.status(404).json({ error: 'Job not found.' });
+    }
+
+    assertTransition(job.status, JOB_STATUS.PICKED, req.user.role);
+
+    await db.withTransaction(async (client) => {
+      // Create and approve override record
+      const appRecord = await Approval.createRequest(
+        {
+          jobId: job_id,
+          type: APPROVAL_TYPE.PICKUP_OVERRIDE,
+          requestedBy: req.user.id,
+          reason: reason.trim(),
+        },
+        client
+      );
+
+      await Approval.recordDecision(
+        {
+          id: appRecord.id,
+          decidedBy: req.user.id,
+          decision: APPROVAL_DECISION.APPROVED,
+          reason: reason.trim(),
+        },
+        client
+      );
+
+      // Transition job to Picked
+      await client.query(
+        `UPDATE jobs
+         SET status = $1,
+             picked_at = NOW(),
+             updated_at = NOW()
+         WHERE id = $2`,
+        [JOB_STATUS.PICKED, job_id]
+      );
+
+      await logEvent({
+        jobId: job_id,
+        actorUserId: req.user.id,
+        actorLabel: req.user.name,
+        eventType: AUDIT_EVENT.OVERRIDE_APPLIED,
+        oldValue: { status: job.status },
+        newValue: { status: JOB_STATUS.PICKED, override_type: 'pickup_without_code' },
+        notes: `Owner override: Shoes released without OTP. Reason: ${reason}`,
+        client,
+      });
+
+      await logEvent({
+        jobId: job_id,
+        actorUserId: req.user.id,
+        actorLabel: req.user.name,
+        eventType: AUDIT_EVENT.JOB_PICKED,
+        notes: `Shoes collected via Owner direct override.`,
+        client,
+      });
+    });
+
+    logger.warn('Direct owner pickup override executed', {
+      jobId: job.id,
+      jobNumber: job.job_number,
+      owner: req.user.name,
+      reason,
+    });
+
+    res.json({
+      success: true,
+      message: `Pickup override granted and Job ${job.job_number} marked as Picked.`,
+      status: JOB_STATUS.PICKED,
+    });
   } catch (err) {
     next(err);
   }

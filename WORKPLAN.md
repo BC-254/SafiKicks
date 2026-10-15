@@ -812,11 +812,11 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 10 — Owner Approvals
 
-- [ ] **M10-01** `GET /api/owner/approvals` — auth: owner; return pending approvals (out-of-band price, pickup override, alternate identifier)
-- [ ] **M10-02** `POST /api/owner/approvals/:id/decide` — auth: owner; approve/reject with reason; if price approval: update price_version, notify customer via SMS (price proposed SMS); log event
-- [ ] **M10-03** Frontend: `ApprovalsPage.jsx` — list of pending items with type badges. Each row: job#, type, requester, details. Approve/Reject buttons inline. Reason text field before reject.
-- [ ] **M10-04** Owner override for pickup without code: `POST /api/owner/pickup-override` — creates approval + performs pickup in one step; logs override prominently
-- [ ] **M10-05** Commit: "feat: owner approvals"
+- ✅ DONE **M10-01** `GET /api/owner/approvals` — auth: owner; return pending approvals (out-of-band price, pickup override, alternate identifier)
+- ✅ DONE **M10-02** `POST /api/owner/approvals/:id/decide` — auth: owner; approve/reject with reason; if price approval: update price_version, notify customer via SMS (price proposed SMS); log event
+- ✅ DONE **M10-03** Frontend: `ApprovalsPage.jsx` — list of pending items with type badges. Each row: job#, type, requester, details. Approve/Reject buttons inline. Reason text field before reject.
+- ✅ DONE **M10-04** Owner override for pickup without code: `POST /api/owner/pickup-override` — creates approval + performs pickup in one step; logs override prominently
+- ✅ DONE **M10-05** Commit: "feat: owner approvals"
 
 ---
 

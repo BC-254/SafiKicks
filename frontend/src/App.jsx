@@ -22,6 +22,7 @@ import { PriceConfirmPage } from './views/customer/PriceConfirmPage';
 // Owner Views
 import { StaffPage } from './views/owner/StaffPage';
 import { CatalogPage } from './views/owner/CatalogPage';
+import { ApprovalsPage } from './views/owner/ApprovalsPage';
 
 // Counter Views
 import { ReceiptPage } from './views/counter/ReceiptPage';
@@ -126,7 +127,7 @@ export default function App() {
             <Route index element={<Navigate to="/owner/dashboard" replace />} />
             <Route path="dashboard" element={<PlaceholderView title="Executive Overview" milestone="M11" role="Owner" />} />
             <Route path="jobs" element={<PlaceholderView title="Job Oversight" milestone="M11" role="Owner" />} />
-            <Route path="approvals" element={<PlaceholderView title="Pending Approvals" milestone="M10" role="Owner" />} />
+            <Route path="approvals" element={<ApprovalsPage />} />
             <Route path="reconciliation" element={<PlaceholderView title="Daily Cash Close" milestone="M11" role="Owner" />} />
             <Route path="reports" element={<PlaceholderView title="Revenue & SMS Analytics" milestone="M11" role="Owner" />} />
             <Route path="audit" element={<PlaceholderView title="Immutable Audit Trail" milestone="M12" role="Owner" />} />

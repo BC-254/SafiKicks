@@ -14,7 +14,7 @@ const pool = new Pool({
   // Connection pool settings
   max: 20,              // maximum pool size
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 10000,
   ssl: env.IS_PROD ? { rejectUnauthorized: false } : false,
 });
 
