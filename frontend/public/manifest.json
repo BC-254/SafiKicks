@@ -1,0 +1,17 @@
+{
+  "short_name": "SoleCare",
+  "name": "SoleCare — Shoe Repair & Restoration",
+  "description": "Track your repair, confirm prices, and collect your shoes.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/register",
+  "background_color": "#F5F5F7",
+  "theme_color": "#0071E3",
+  "display": "standalone",
+  "orientation": "portrait"
+}

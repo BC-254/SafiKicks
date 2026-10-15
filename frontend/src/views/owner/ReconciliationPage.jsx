@@ -185,12 +185,7 @@ export function ReconciliationPage() {
       {loading ? (
         <PageSpinner message="Calculating drawer ledger..." />
       ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)',
-          gap: 'var(--space-6)',
-          alignItems: 'start',
-        }}>
+        <div className="responsive-split-2">
           {/* Left: Close Form */}
           <Card style={{ padding: 'var(--space-6)' }}>
             <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 600, color: 'var(--color-text)', marginBottom: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>

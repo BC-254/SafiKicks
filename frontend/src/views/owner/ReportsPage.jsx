@@ -197,12 +197,7 @@ export function ReportsPage() {
           </div>
 
           {/* Revenue by Service & Payment Methods Breakdown */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)',
-            gap: 'var(--space-6)',
-            alignItems: 'start',
-          }}>
+          <div className="responsive-split-2">
             {/* Service Breakdown */}
             <Card style={{ padding: 'var(--space-5)' }}>
               <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--color-text)', marginBottom: 'var(--space-4)' }}>

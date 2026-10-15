@@ -279,12 +279,7 @@ export function DashboardPage() {
       </div>
 
       {/* Main Split Layout: Recent Jobs (Left) & Operational Summary (Right) */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1.8fr) minmax(0, 1.2fr)',
-        gap: 'var(--space-6)',
-        alignItems: 'start',
-      }}>
+      <div className="responsive-split-2">
         {/* Left Column: Recent Jobs Table */}
         <Card style={{ overflow: 'hidden' }}>
           <div style={{
