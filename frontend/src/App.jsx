@@ -14,6 +14,10 @@ import { PrivateRoute } from './routes/PrivateRoute';
 // Auth Views
 import { LoginPage } from './views/auth/LoginPage';
 
+// Customer Views
+import { RegisterPage } from './views/customer/RegisterPage';
+import { JobStatusPage } from './views/customer/JobStatusPage';
+
 // Owner Views
 import { StaffPage } from './views/owner/StaffPage';
 import { CatalogPage } from './views/owner/CatalogPage';
@@ -58,9 +62,8 @@ export default function App() {
 
           {/* Customer Portal (Public, Mobile-First) */}
           <Route element={<CustomerLayout />}>
-            <Route path="/register" element={<PlaceholderView title="Customer Registration" milestone="M4" role="Customer" />} />
-            <Route path="/verify" element={<PlaceholderView title="Phone Verification" milestone="M4" role="Customer" />} />
-            <Route path="/job/:token" element={<PlaceholderView title="Job Status Timeline" milestone="M4" role="Customer" />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/job/:token" element={<JobStatusPage />} />
             <Route path="/job/:token/confirm-price" element={<PlaceholderView title="Confirm Price" milestone="M7" role="Customer" />} />
             <Route path="/job/:token/pickup" element={<PlaceholderView title="Pickup Status" milestone="M9" role="Customer" />} />
           </Route>
