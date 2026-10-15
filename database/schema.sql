@@ -342,19 +342,32 @@ VALUES
 ON CONFLICT (name) DO NOTHING;
 
 -- ================================================================
--- SEED DATA: Default Owner Account
--- Password: ChangeMe123! (MUST be changed on first login)
--- bcrypt hash generated with 12 rounds
+-- SEED DATA: Default Accounts
+-- Default Passwords:
+--   Owner:         ChangeMe123!        (MUST change in production)
+--   Counter Staff: CounterStaff123!
+--   Repairer:      SecureRepairer123!
 -- ================================================================
--- NOTE: Generate a real hash with: node -e "console.log(require('bcrypt').hashSync('ChangeMe123!', 12))"
--- Then replace the placeholder below before running in production.
 INSERT INTO users (name, role, email, password_hash)
-VALUES (
-  'Shop Owner',
-  'owner',
-  'owner@solecare.co.ke',
-  '$2b$12$PLACEHOLDER_REPLACE_WITH_REAL_BCRYPT_HASH_OF_ChangeMe123!'
-)
+VALUES 
+  (
+    'Shop Owner',
+    'owner',
+    'owner@solecare.co.ke',
+    '$2b$12$Zr/Aa9vz2690c1xEpFcst.t7HzqXTAbB21CGcXTmG33jGJ87ZSu1K'
+  ),
+  (
+    'Grace Counter',
+    'counter_staff',
+    'grace@solecare.co.ke',
+    '$2b$10$LTLLi1NOiKTT.b4tvrf.cef5a6mTkLLGilpnL7IQwDP1IkQxZRY8i'
+  ),
+  (
+    'Joseph Repairer',
+    'repairer',
+    'joseph@solecare.co.ke',
+    '$2b$12$JshRLJx8vpP/OkJgNS2xjuptK4jceuFVqv1ppU5L.7sk88De2I6fq'
+  )
 ON CONFLICT (email) DO NOTHING;
 
 -- ================================================================

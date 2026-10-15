@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # ── PostgreSQL Database ──────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: kelvin_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kelvin_shoe_repair
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-Lucha$$200}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d kelvin_shoe_repair"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kelvin_net
+
+  # ── Express API Backend ───────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kelvin_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-Lucha$$200}@postgres:5432/kelvin_shoe_repair
+      JWT_SECRET: ${JWT_SECRET:-9fa82b5cd8e1784910efc6a127a94be25801efc9d7249a5b3c4d8e7f12345678}
+      JWT_EXPIRES_IN: 8h
+      PHONE_SESSION_EXPIRES_IN: 10m
+      SMS_PROVIDER: ${SMS_PROVIDER:-africastalking}
+      SMS_MODE: ${SMS_MODE:-mock}
+      AT_API_KEY: ${AT_API_KEY:-}
+      AT_USERNAME: ${AT_USERNAME:-}
+      UPLOAD_DIR: /app/uploads
+      MAX_FILE_SIZE_MB: 10
+      IMAGE_MAX_DIMENSION: 1200
+      IMAGE_QUALITY: 80
+      SHOP_TIMEZONE: Africa/Nairobi
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
+      SESSION_INACTIVITY_MINUTES: 5
+      BCRYPT_ROUNDS: 12
+      OTP_EXPIRY_MINUTES: 10
+      PICKUP_CODE_EXPIRY_HOURS: 24
+      REGISTRATION_EXPIRY_HOURS: 48
+      PRICE_CONFIRMATION_TIMEOUT_HOURS: 72
+      ABANDONED_DAYS: 30
+      OTP_MAX_ATTEMPTS: 3
+      LOGIN_MAX_ATTEMPTS: 5
+      LOGIN_LOCKOUT_MINUTES: 5
+    volumes:
+      - uploads_data:/app/uploads
+    ports:
+      - "3001:3001"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3001/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - kelvin_net
+
+  # ── Vite React Frontend & Nginx Proxy ────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kelvin_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - kelvin_net
+
+volumes:
+  postgres_data:
+    name: kelvin_postgres_data
+  uploads_data:
+    name: kelvin_uploads_data
+
+networks:
+  kelvin_net:
+    name: kelvin_network
+    driver: bridge

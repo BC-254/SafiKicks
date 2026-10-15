@@ -708,7 +708,7 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 - ✅ DONE **M2-05** `POST /api/owner/staff` — create staff account (owner only); hash password
 - ✅ DONE **M2-06** `GET /api/owner/staff` — list all staff (owner only)
 - ✅ DONE **M2-07** `PATCH /api/owner/staff/:id` — update name/role/active (owner only)
-- ✅ DONE **M2-08** Frontend: `LoginPage.jsx` — email + password. Apple-style card centered. Error states (locked, wrong).
+- ✅ DONE **M2-08** Frontend: `LoginPage.jsx` — email + password. Apple-style card centered. Error states (locked, wrong). JWT stored in memory + `httpOnly` cookie via backend.
 - ✅ DONE **M2-09** Frontend: `authStore.js` (Zustand) — `user`, `login()`, `logout()`, `isAuthenticated`
 - ✅ DONE **M2-10** Frontend: `PrivateRoute.jsx` — redirects to `/login` if not authenticated or wrong role
 - ✅ DONE **M2-11** Frontend: `StaffPage.jsx` (Owner) — list staff, add staff modal, toggle active
@@ -737,10 +737,10 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 - ✅ DONE **M4-04** `GET /api/job/:token` — public; return job status + timeline (no PII except own)
 - ✅ DONE **M4-05** `GET /api/register/catalog` — public; same as `/api/catalog`
 - ✅ DONE **M4-06** Frontend: `CustomerLayout.jsx` — white background, max-width 480px, centered, no sidebar
-- ✅ DONE **M4-07** Frontend: `RegisterPage.jsx` — multi-step form (Step 1: details; Step 2: OTP; Step 3: success). Floating label inputs. Service dropdown shows price range on select. Privacy consent checkbox.
-- ✅ DONE **M4-08** Frontend: Integrated OTP 6-box input with 60s resend timer and error handling in registration flow.
-- ✅ DONE **M4-09** Frontend: `JobStatusPage.jsx` — job number + status badge + 5-stage animated stepper. Polling every 20s. Mobile-optimized.
-- ✅ DONE **M4-10** Handle registration expiry: background helper sets status to `Expired` for jobs where `expires_at < NOW()` and status = `Registered`. Log event.
+- ✅ DONE **M4-07** Frontend: `RegisterPage.jsx` — multi-step form (Step 1: details; Step 2: OTP; Step 3: success). Floating label inputs. Service dropdown shows price range on select. Privacy consent checkbox. Captcha placeholder (hCaptcha or reCAPTCHA v3 client-side).
+- ✅ DONE **M4-08** Frontend: `VerifyPhonePage.jsx` — 6-box OTP input (auto-advance). 60s resend countdown. Error state (wrong code / locked).
+- ✅ DONE **M4-09** Frontend: `JobStatusPage.jsx` — job number + status badge + animated timeline. Polling every 30s. Mobile-optimized.
+- ✅ DONE **M4-10** Handle registration expiry: background job (or startup cron) sets status to `Expired` for jobs where `expires_at < NOW()` and status = `Registered`. Log event.
 - ✅ DONE **M4-11** Commit: "feat: customer registration portal"
 
 ---
@@ -873,24 +873,24 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 15 — UI Polish & Responsiveness
 
-- [ ] **M15-01** Audit every page against Design Tokens — no hardcoded hex colors, no inline font sizes
-- [ ] **M15-02** Verify all 3 dashboards are fully responsive: mobile (375px), tablet (768px), desktop (1280px)
-- [ ] **M15-03** Add loading skeletons (shimmer effect) for all async data fetches
-- [ ] **M15-04** Add toast notifications (success, error, info) for all user actions
-- [ ] **M15-05** Add empty states with helpful messages (no jobs in queue, no payments, etc.)
-- [ ] **M15-06** Add `<title>` and `<meta name="description">` to all pages
-- [ ] **M15-07** Add PWA manifest for customer portal (Add to Home Screen on mobile)
-- [ ] **M15-08** Commit: "polish: UI responsiveness and empty states"
+- ✅ DONE **M15-01** Audit every page against Design Tokens — no hardcoded hex colors, no inline font sizes
+- ✅ DONE **M15-02** Verify all 3 dashboards are fully responsive: mobile (375px), tablet (768px), desktop (1280px)
+- ✅ DONE **M15-03** Add loading skeletons (shimmer effect) for all async data fetches
+- ✅ DONE **M15-04** Add toast notifications (success, error, info) for all user actions
+- ✅ DONE **M15-05** Add empty states with helpful messages (no jobs in queue, no payments, etc.)
+- ✅ DONE **M15-06** Add `<title>` and `<meta name="description">` to all pages
+- ✅ DONE **M15-07** Add PWA manifest for customer portal (Add to Home Screen on mobile)
+- ✅ DONE **M15-08** Commit: "polish: UI responsiveness and empty states"
 
 ---
 
 ### MILESTONE 16 — Deployment Prep
 
-- [ ] **M16-01** Create `Dockerfile` for backend and frontend
-- [ ] **M16-02** Create `docker-compose.yml` (backend, frontend, postgres)
-- [ ] **M16-03** Create production `.env` checklist (never commit real .env)
-- [ ] **M16-04** Create `README.md` with setup instructions, environment variables, and deployment steps
-- [ ] **M16-05** Final commit: "chore: deployment configuration"
+- ✅ DONE **M16-01** Create `Dockerfile` for backend and frontend
+- ✅ DONE **M16-02** Create `docker-compose.yml` (backend, frontend, postgres)
+- ✅ DONE **M16-03** Create production `.env` checklist (never commit real .env)
+- ✅ DONE **M16-04** Create `README.md` with setup instructions, environment variables, and deployment steps
+- ✅ DONE **M16-05** Final commit: "chore: deployment configuration"
 
 ---
 
@@ -982,4 +982,4 @@ At the start of every new session:
 
 ---
 
-*Last updated: 2026-10-14 | Phase 1 — Build in Progress*
+*Last updated: 2026-10-15 | Phase 1 — 100% Complete & Production Ready*
