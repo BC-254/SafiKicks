@@ -2,10 +2,6 @@
 /**
  * rateLimiter.js — Configurable rate limiters for different route groups.
  * Using express-rate-limit v7+.
- * 
- * Usage:
- *   const { globalLimiter, registrationLimiter, otpLimiter } = require('./rateLimiter');
- *   router.post('/verify-phone', otpLimiter, handler);
  */
 
 const rateLimit = require('express-rate-limit');
@@ -16,7 +12,7 @@ const rateLimit = require('express-rate-limit');
 const rateLimitHandler = (req, res) => {
   res.status(429).json({
     error: 'Too many requests. Please wait a moment and try again.',
-    retryAfter: Math.ceil(req.rateLimit.resetTime / 1000),
+    retryAfter: Math.ceil((req.rateLimit?.resetTime?.getTime() - Date.now()) / 1000) || 60,
   });
 };
 
@@ -28,7 +24,7 @@ const globalLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders:   false,
   handler:         rateLimitHandler,
-  keyGenerator:    (req) => req.ip,
+  validate:        { ip: false, xForwardedForHeader: false },
 });
 
 // ── Registration limiter (customer self-registration) ─────────
@@ -39,7 +35,7 @@ const registrationLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders:   false,
   handler:         rateLimitHandler,
-  keyGenerator:    (req) => req.ip,
+  validate:        { ip: false, xForwardedForHeader: false },
 });
 
 // ── OTP / phone verification limiter ─────────────────────────
@@ -50,7 +46,8 @@ const otpLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders:   false,
   handler:         rateLimitHandler,
-  keyGenerator:    (req) => req.body?.phone || req.ip,
+  keyGenerator:    (req) => req.body?.phone || req.ip || 'anonymous',
+  validate:        { keyGeneratorIpFallback: false, ip: false, xForwardedForHeader: false },
 });
 
 // ── Login limiter ─────────────────────────────────────────────
@@ -61,19 +58,18 @@ const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders:   false,
   handler:         rateLimitHandler,
-  keyGenerator:    (req) => req.ip,
+  validate:        { ip: false, xForwardedForHeader: false },
 });
 
 // ── Pickup code verification limiter ─────────────────────────
 // 5 verifications per 5 minutes per IP
-// (lockout after 3 attempts is enforced by business logic separately)
 const pickupLimiter = rateLimit({
   windowMs:        5 * 60 * 1000,
   max:             5,
   standardHeaders: true,
   legacyHeaders:   false,
   handler:         rateLimitHandler,
-  keyGenerator:    (req) => req.ip,
+  validate:        { ip: false, xForwardedForHeader: false },
 });
 
 module.exports = {

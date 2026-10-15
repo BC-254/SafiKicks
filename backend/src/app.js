@@ -16,14 +16,14 @@ const errorHandler   = require('./middleware/errorHandler');
 const { globalLimiter } = require('./middleware/rateLimiter');
 
 // ── Route imports (added incrementally as routes are built) ──
-// const authRoutes         = require('./routes/auth.routes');
+const authRoutes         = require('./routes/auth.routes');
+const ownerRoutes        = require('./routes/owner.routes');
 // const registrationRoutes = require('./routes/registration.routes');
 // const receiptRoutes      = require('./routes/receipt.routes');
 // const repairerRoutes     = require('./routes/repairer.routes');
 // const pricingRoutes      = require('./routes/pricing.routes');
 // const paymentRoutes      = require('./routes/payment.routes');
 // const pickupRoutes       = require('./routes/pickup.routes');
-// const ownerRoutes        = require('./routes/owner.routes');
 // const catalogRoutes      = require('./routes/catalog.routes');
 // const auditRoutes        = require('./routes/audit.routes');
 
@@ -73,7 +73,8 @@ app.use('/uploads', express.static(env.UPLOAD_DIR));
 
 // ── API Routes ────────────────────────────────────────────────
 // Uncomment each route as the corresponding milestone is completed:
-// app.use('/api/auth',         authRoutes);
+app.use('/api/auth',         authRoutes);
+app.use('/api/owner',        ownerRoutes);
 // app.use('/api/catalog',      catalogRoutes);
 // app.use('/api/register',     registrationRoutes);
 // app.use('/api/receipt',      receiptRoutes);
@@ -81,7 +82,6 @@ app.use('/uploads', express.static(env.UPLOAD_DIR));
 // app.use('/api/pricing',      pricingRoutes);
 // app.use('/api/counter',      paymentRoutes);
 // app.use('/api/pickup',       pickupRoutes);
-// app.use('/api/owner',        ownerRoutes);
 // app.use('/api/audit',        auditRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────
@@ -92,26 +92,28 @@ app.use((_req, res) => {
 // ── Global error handler ──────────────────────────────────────
 app.use(errorHandler);
 
-// ── Start server ─────────────────────────────────────────────
-const server = app.listen(env.PORT, () => {
-  logger.info(`Server started`, {
-    port: env.PORT,
-    env: env.NODE_ENV,
-    url: `http://localhost:${env.PORT}`,
+// ── Start server (only if executed directly, not when required by tests) ─
+if (require.main === module) {
+  const server = app.listen(env.PORT, () => {
+    logger.info(`Server started`, {
+      port: env.PORT,
+      env: env.NODE_ENV,
+      url: `http://localhost:${env.PORT}`,
+    });
   });
-});
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received — shutting down gracefully');
-  server.close(() => {
-    logger.info('Server closed');
-    process.exit(0);
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    logger.info('SIGTERM received — shutting down gracefully');
+    server.close(() => {
+      logger.info('Server closed');
+      process.exit(0);
+    });
   });
-});
+}
 
 process.on('unhandledRejection', (reason) => {
   logger.error('Unhandled promise rejection', { reason: String(reason) });
 });
 
-module.exports = app; // for testing
+module.exports = app;
