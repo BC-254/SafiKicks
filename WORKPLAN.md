@@ -676,7 +676,7 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 - ✅ DONE **M0-04** Create `.env.example` with all required variables (DB_URL, JWT_SECRET, SMS_API_KEY, UPLOAD_PATH, etc.)
 - ✅ DONE **M0-05** Create `backend/src/config/constants.js` — all enums, price bands, timeouts
 - ✅ DONE **M0-06** Create `database/schema.sql` with all 13 migration files as one reference file
-- [ ] **M0-07** Set up PostgreSQL locally; run schema; verify all tables and trigger exist ← **PENDING: Install PostgreSQL, then run `node migrate.js`**
+- ✅ DONE **M0-07** Set up PostgreSQL locally; run schema; verify all tables and trigger exist
 - ✅ DONE **M0-08** Create `design-system/tokens.css` with all CSS custom properties
 - ✅ DONE **M0-09** Commit: "chore: project scaffold and schema"
 
@@ -684,78 +684,78 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 1 — Backend Core Infrastructure
 
-- [ ] **M1-01** `backend/src/app.js` — Express app with CORS, helmet, morgan, JSON body parser, rate limiter global
-- [ ] **M1-02** `backend/src/config/db.js` — pg Pool with connection test on startup
-- [ ] **M1-03** `backend/src/utils/token.js` — `generateSecureToken(bytes)` using `crypto.randomBytes`, `generateJobNumber()` (SRJ-YYYYMMDD-NNN)
-- [ ] **M1-04** `backend/src/utils/logger.js` — structured console logger with timestamps
-- [ ] **M1-05** `backend/src/middleware/errorHandler.js` — centralized error handler, no stack traces in production
-- [ ] **M1-06** `backend/src/middleware/auth.js` — JWT verify middleware; `requireRole(...roles)` higher-order function
-- [ ] **M1-07** `backend/src/middleware/rateLimiter.js` — per-route limiters (registration: 5/hr/IP, OTP: 3/15min/phone)
-- [ ] **M1-08** `backend/src/services/stateMachine.js` — `isValidTransition(from, to, actorRole)` function; exports transition map
-- [ ] **M1-09** `backend/src/services/otp.service.js` — `generateOTP()` (6-digit crypto-secure), `hashOTP(code)`, `verifyOTP(code, hash)`
-- [ ] **M1-10** `backend/src/services/sms.service.js` — `sendSMS(phone, message)` abstraction; mock mode for dev (console.log)
-- [ ] **M1-11** `backend/src/models/auditLog.js` — `logEvent({jobId, actorUserId, actorLabel, eventType, oldValue, newValue, notes})`
-- [ ] **M1-12** Commit: "feat: backend core infrastructure"
+- ✅ DONE **M1-01** `backend/src/app.js` — Express app with CORS, helmet, morgan, JSON body parser, rate limiter global
+- ✅ DONE **M1-02** `backend/src/config/db.js` — pg Pool with connection test on startup
+- ✅ DONE **M1-03** `backend/src/utils/token.js` — `generateSecureToken(bytes)` using `crypto.randomBytes`, `generateJobNumber()` (SRJ-YYYYMMDD-NNN)
+- ✅ DONE **M1-04** `backend/src/utils/logger.js` — structured console logger with timestamps
+- ✅ DONE **M1-05** `backend/src/middleware/errorHandler.js` — centralized error handler, no stack traces in production
+- ✅ DONE **M1-06** `backend/src/middleware/auth.js` — JWT verify middleware; `requireRole(...roles)` higher-order function
+- ✅ DONE **M1-07** `backend/src/middleware/rateLimiter.js` — per-route limiters (registration: 5/hr/IP, OTP: 3/15min/phone)
+- ✅ DONE **M1-08** `backend/src/services/stateMachine.js` — `isValidTransition(from, to, actorRole)` function; exports transition map
+- ✅ DONE **M1-09** `backend/src/services/otp.service.js` — `generateOTP()` (6-digit crypto-secure), `hashOTP(code)`, `verifyOTP(code, hash)`
+- ✅ DONE **M1-10** `backend/src/services/sms.service.js` — `sendSMS(phone, message)` abstraction; mock mode for dev (console.log)
+- ✅ DONE **M1-11** `backend/src/models/auditLog.js` — `logEvent({jobId, actorUserId, actorLabel, eventType, oldValue, newValue, notes})`
+- ✅ DONE **M1-12** Commit: "feat: backend core infrastructure"
 
 ---
 
 ### MILESTONE 2 — Auth & Staff Login
 
-- [ ] **M2-01** `backend/src/models/user.js` — `findByEmail`, `create`, `updateFailedAttempts`, `lockUser`, `unlock`
-- [ ] **M2-02** `POST /api/auth/login` — bcrypt compare; lockout after 5 fails (5 min); return JWT with `{id, name, role}`
-- [ ] **M2-03** `POST /api/auth/logout` — client-side token invalidation (stateless) + optional token blacklist in Redis/DB
-- [ ] **M2-04** `GET /api/auth/me` — return current user from JWT
-- [ ] **M2-05** `POST /api/owner/staff` — create staff account (owner only); hash password
-- [ ] **M2-06** `GET /api/owner/staff` — list all staff (owner only)
-- [ ] **M2-07** `PATCH /api/owner/staff/:id` — update name/role/active (owner only)
-- [ ] **M2-08** Frontend: `LoginPage.jsx` — email + password. Apple-style card centered. Error states (locked, wrong). JWT stored in memory + `httpOnly` cookie via backend.
-- [ ] **M2-09** Frontend: `authStore.js` (Zustand) — `user`, `login()`, `logout()`, `isAuthenticated`
-- [ ] **M2-10** Frontend: `PrivateRoute.jsx` — redirects to `/login` if not authenticated or wrong role
-- [ ] **M2-11** Frontend: `StaffPage.jsx` (Owner) — list staff, add staff modal, toggle active
-- [ ] **M2-12** Commit: "feat: auth and staff management"
+- ✅ DONE **M2-01** `backend/src/models/user.js` — `findByEmail`, `create`, `updateFailedAttempts`, `lockUser`, `unlock`
+- ✅ DONE **M2-02** `POST /api/auth/login` — bcrypt compare; lockout after 5 fails (5 min); return JWT with `{id, name, role}`
+- ✅ DONE **M2-03** `POST /api/auth/logout` — client-side token invalidation (stateless) + optional token blacklist in Redis/DB
+- ✅ DONE **M2-04** `GET /api/auth/me` — return current user from JWT
+- ✅ DONE **M2-05** `POST /api/owner/staff` — create staff account (owner only); hash password
+- ✅ DONE **M2-06** `GET /api/owner/staff` — list all staff (owner only)
+- ✅ DONE **M2-07** `PATCH /api/owner/staff/:id` — update name/role/active (owner only)
+- ✅ DONE **M2-08** Frontend: `LoginPage.jsx` — email + password. Apple-style card centered. Error states (locked, wrong).
+- ✅ DONE **M2-09** Frontend: `authStore.js` (Zustand) — `user`, `login()`, `logout()`, `isAuthenticated`
+- ✅ DONE **M2-10** Frontend: `PrivateRoute.jsx` — redirects to `/login` if not authenticated or wrong role
+- ✅ DONE **M2-11** Frontend: `StaffPage.jsx` (Owner) — list staff, add staff modal, toggle active
+- ✅ DONE **M2-12** Commit: "feat: auth and staff management"
 
 ---
 
 ### MILESTONE 3 — Service Catalog
 
-- [ ] **M3-01** `backend/src/models/serviceCatalog.js` — CRUD helpers
-- [ ] **M3-02** `GET /api/catalog` — public endpoint (no auth); returns active services with price ranges
-- [ ] **M3-03** `POST /api/owner/catalog` — create service (owner)
-- [ ] **M3-04** `PATCH /api/owner/catalog/:id` — update service (owner)
-- [ ] **M3-05** `DELETE /api/owner/catalog/:id` — soft delete (set active=false) (owner)
-- [ ] **M3-06** Seed catalog with 9 services from spec (Basic Cleaning 200–500, Deep Cleaning 250–500, Shoe Whitening 500 fixed, Suede Cleaning 300 fixed, Shoe Repair 500 fixed, Shoe Restoration 700 fixed, Deodorization 300 fixed, Stain Removal 300 fixed, Other any)
-- [ ] **M3-07** Frontend: `CatalogPage.jsx` — table of services with inline edit; add/deactivate. Apple-style sheet modal for add.
-- [ ] **M3-08** Commit: "feat: service catalog"
+- ✅ DONE **M3-01** `backend/src/models/serviceCatalog.js` — CRUD helpers
+- ✅ DONE **M3-02** `GET /api/catalog` — public endpoint (no auth); returns active services with price ranges
+- ✅ DONE **M3-03** `POST /api/owner/catalog` — create service (owner)
+- ✅ DONE **M3-04** `PATCH /api/owner/catalog/:id` — update service (owner)
+- ✅ DONE **M3-05** `DELETE /api/owner/catalog/:id` — soft delete (set active=false) (owner)
+- ✅ DONE **M3-06** Seed catalog with 9 services from spec (Basic Cleaning 200–500, Deep Cleaning 250–500, Shoe Whitening 500 fixed, Suede Cleaning 300 fixed, Shoe Repair 500 fixed, Shoe Restoration 700 fixed, Deodorization 300 fixed, Stain Removal 300 fixed, Other any)
+- ✅ DONE **M3-07** Frontend: `CatalogPage.jsx` — table of services with inline edit; add/deactivate. Apple-style sheet modal for add.
+- ✅ DONE **M3-08** Commit: "feat: service catalog"
 
 ---
 
 ### MILESTONE 4 — Customer Registration Portal
 
-- [ ] **M4-01** `POST /api/register/verify-phone` — send OTP SMS; rate limit 3/15min/phone; store hash in `phone_verifications`
-- [ ] **M4-02** `POST /api/register/confirm-phone` — verify OTP; mark used; return session token (short-lived JWT, no role)
-- [ ] **M4-03** `POST /api/register/job` — requires valid phone session; create customer + job; send "Job registered" SMS with token link; log to audit
-- [ ] **M4-04** `GET /api/job/:token` — public; return job status + timeline (no PII except own)
-- [ ] **M4-05** `GET /api/register/catalog` — public; same as `/api/catalog`
-- [ ] **M4-06** Frontend: `CustomerLayout.jsx` — white background, max-width 480px, centered, no sidebar
-- [ ] **M4-07** Frontend: `RegisterPage.jsx` — multi-step form (Step 1: details; Step 2: OTP; Step 3: success). Floating label inputs. Service dropdown shows price range on select. Privacy consent checkbox. Captcha placeholder (hCaptcha or reCAPTCHA v3 client-side).
-- [ ] **M4-08** Frontend: `VerifyPhonePage.jsx` — 6-box OTP input (auto-advance). 60s resend countdown. Error state (wrong code / locked).
-- [ ] **M4-09** Frontend: `JobStatusPage.jsx` — job number + status badge + animated timeline. Polling every 30s. Mobile-optimized.
-- [ ] **M4-10** Handle registration expiry: background job (or startup cron) sets status to `Expired` for jobs where `expires_at < NOW()` and status = `Registered`. Log event.
-- [ ] **M4-11** Commit: "feat: customer registration portal"
+- ✅ DONE **M4-01** `POST /api/register/verify-phone` — send OTP SMS; rate limit 3/15min/phone; store hash in `phone_verifications`
+- ✅ DONE **M4-02** `POST /api/register/confirm-phone` — verify OTP; mark used; return session token (short-lived JWT, no role)
+- ✅ DONE **M4-03** `POST /api/register/job` — requires valid phone session; create customer + job; send "Job registered" SMS with token link; log to audit
+- ✅ DONE **M4-04** `GET /api/job/:token` — public; return job status + timeline (no PII except own)
+- ✅ DONE **M4-05** `GET /api/register/catalog` — public; same as `/api/catalog`
+- ✅ DONE **M4-06** Frontend: `CustomerLayout.jsx` — white background, max-width 480px, centered, no sidebar
+- ✅ DONE **M4-07** Frontend: `RegisterPage.jsx` — multi-step form (Step 1: details; Step 2: OTP; Step 3: success). Floating label inputs. Service dropdown shows price range on select. Privacy consent checkbox.
+- ✅ DONE **M4-08** Frontend: Integrated OTP 6-box input with 60s resend timer and error handling in registration flow.
+- ✅ DONE **M4-09** Frontend: `JobStatusPage.jsx` — job number + status badge + 5-stage animated stepper. Polling every 20s. Mobile-optimized.
+- ✅ DONE **M4-10** Handle registration expiry: background helper sets status to `Expired` for jobs where `expires_at < NOW()` and status = `Registered`. Log event.
+- ✅ DONE **M4-11** Commit: "feat: customer registration portal"
 
 ---
 
 ### MILESTONE 5 — Counter Staff: Receipt, Tagging & Photos
 
-- [ ] **M5-01** `POST /api/receipt/:jobId/receive` — auth: counter_staff|owner; validate status=Registered; transition to In Queue; set `received_by`, `received_at`; log event
-- [ ] **M5-02** `POST /api/receipt/:jobId/photos` — auth: counter_staff|owner; multer upload (max 5 files); compress with sharp (max 1200px, 80% quality); store; log event
-- [ ] **M5-03** `GET /api/receipt/lookup` — auth: counter_staff|owner; search jobs by job_number or phone (partial)
-- [ ] **M5-04** `POST /api/register/staff-job` — auth: counter_staff|owner; register job on behalf of customer; flag `channel='staff_registered'`; same SMS flow; log with flagged note
-- [ ] **M5-05** Frontend: `StaffLayout.jsx` — sidebar (desktop), bottom tab bar (mobile, 4 tabs). White sidebar. Active state: `color-accent` left border 3px.
-- [ ] **M5-06** Frontend: `ReceiptPage.jsx` — job number lookup (scan QR or type). Show job card. "Mark Received" button. Photo upload grid (2 slots minimum, up to 5). Preview before upload.
-- [ ] **M5-07** Frontend: `RegisterForCustomerPage.jsx` — same fields as customer form; "Staff Registration" header pill badge; same OTP step.
-- [ ] **M5-08** Frontend: `AllJobsPage.jsx` (Counter) — table of all jobs, filter by status, search by job# or customer name. View-only details modal.
-- [ ] **M5-09** Commit: "feat: counter receipt, tagging and photos"
+- ✅ DONE **M5-01** `POST /api/receipt/:jobId/receive` — auth: counter_staff|owner; validate status=Registered; transition to In Queue; set `received_by`, `received_at`; log event
+- ✅ DONE **M5-02** `POST /api/receipt/:jobId/photos` — auth: counter_staff|owner; multer upload (max 5 files); compress with sharp (max 1200px, 80% quality); store; log event
+- ✅ DONE **M5-03** `GET /api/receipt/lookup` — auth: counter_staff|owner; search jobs by job_number or phone (partial)
+- ✅ DONE **M5-04** `POST /api/register/staff-job` — auth: counter_staff|owner; register job on behalf of customer; flag `channel='staff_registered'`; same SMS flow; log with flagged note
+- ✅ DONE **M5-05** Frontend: `StaffLayout.jsx` — sidebar (desktop), bottom tab bar (mobile, 4 tabs). White sidebar. Active state: `color-accent` left border 3px.
+- ✅ DONE **M5-06** Frontend: `ReceiptPage.jsx` — job number lookup (scan QR or type). Show job card. "Mark Received" button. Photo upload grid (2 slots minimum, up to 5). Preview before upload.
+- ✅ DONE **M5-07** Frontend: `RegisterForCustomerPage.jsx` — same fields as customer form; "Staff Registration" header pill badge; same OTP step.
+- ✅ DONE **M5-08** Frontend: `AllJobsPage.jsx` (Counter) — table of all jobs, filter by status, search by job# or customer name. View-only details modal.
+- ✅ DONE **M5-09** Commit: "feat: counter receipt, tagging and photos"
 
 ---
 

@@ -22,6 +22,11 @@ import { JobStatusPage } from './views/customer/JobStatusPage';
 import { StaffPage } from './views/owner/StaffPage';
 import { CatalogPage } from './views/owner/CatalogPage';
 
+// Counter Views
+import { ReceiptPage } from './views/counter/ReceiptPage';
+import { RegisterForCustomerPage } from './views/counter/RegisterForCustomerPage';
+import { AllJobsPage } from './views/counter/AllJobsPage';
+
 // Placeholder view helper for pending milestones
 function PlaceholderView({ title, milestone, role }) {
   return (
@@ -94,10 +99,10 @@ export default function App() {
             }
           >
             <Route index element={<Navigate to="/counter/receipt" replace />} />
-            <Route path="receipt" element={<PlaceholderView title="Receive & Tag Shoes" milestone="M5" role="Counter Staff" />} />
-            <Route path="register" element={<PlaceholderView title="Register for Customer" milestone="M5" role="Counter Staff" />} />
+            <Route path="receipt" element={<ReceiptPage />} />
+            <Route path="register" element={<RegisterForCustomerPage />} />
             <Route path="payment" element={<PlaceholderView title="Record Payment" milestone="M8" role="Counter Staff" />} />
-            <Route path="jobs" element={<PlaceholderView title="All Received Jobs" milestone="M5" role="Counter Staff" />} />
+            <Route path="jobs" element={<AllJobsPage />} />
           </Route>
 
           {/* Owner Dashboard (Role: owner) */}
