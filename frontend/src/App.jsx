@@ -27,6 +27,7 @@ import { CatalogPage } from './views/owner/CatalogPage';
 import { ReceiptPage } from './views/counter/ReceiptPage';
 import { RegisterForCustomerPage } from './views/counter/RegisterForCustomerPage';
 import { AllJobsPage } from './views/counter/AllJobsPage';
+import { PaymentPage } from './views/counter/PaymentPage';
 
 // Repairer Views
 import { QueuePage } from './views/repairer/QueuePage';
@@ -107,7 +108,7 @@ export default function App() {
             <Route index element={<Navigate to="/counter/receipt" replace />} />
             <Route path="receipt" element={<ReceiptPage />} />
             <Route path="register" element={<RegisterForCustomerPage />} />
-            <Route path="payment" element={<PlaceholderView title="Record Payment" milestone="M8" role="Counter Staff" />} />
+            <Route path="payment" element={<PaymentPage />} />
             <Route path="jobs" element={<AllJobsPage />} />
           </Route>
 

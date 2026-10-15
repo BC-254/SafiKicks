@@ -788,13 +788,13 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 8 — Payment Ledger
 
-- [ ] **M8-01** `POST /api/counter/payments` — auth: counter_staff|owner; record payment (amount, method, reference, job_id); update job `payment_status`; log event
-- [ ] **M8-02** `POST /api/counter/payments/reversal` — auth: owner; record reversal with reason; recalculate `payment_status`; log event
-- [ ] **M8-03** `GET /api/counter/jobs/:id/payments` — auth: counter_staff|owner; return payment ledger for job
-- [ ] **M8-04** Calculate `payment_status` after each payment: sum(payments) - sum(reversals); if 0 → Unpaid; if 0 < sum < price → Part-paid; if >= price → Paid
-- [ ] **M8-05** `POST /api/owner/payments/override` — allow pickup despite unpaid balance; creates approval record; logs override in audit
-- [ ] **M8-06** Frontend: `PaymentPage.jsx` (Counter) — job lookup, show amount due (price - paid), payment form (amount, method, reference). Payment history accordion. "Record Payment" button.
-- [ ] **M8-07** Commit: "feat: payment ledger"
+- ✅ DONE **M8-01** `POST /api/counter/payments` — auth: counter_staff|owner; record payment (amount, method, reference, job_id); update job `payment_status`; log event
+- ✅ DONE **M8-02** `POST /api/counter/payments/reversal` — auth: owner; record reversal with reason; recalculate `payment_status`; log event
+- ✅ DONE **M8-03** `GET /api/counter/jobs/:id/payments` — auth: counter_staff|owner; return payment ledger for job
+- ✅ DONE **M8-04** Calculate `payment_status` after each payment: sum(payments) - sum(reversals); if 0 → Unpaid; if 0 < sum < price → Part-paid; if >= price → Paid
+- ✅ DONE **M8-05** `POST /api/owner/payments/override` — allow pickup despite unpaid balance; creates approval record; logs override in audit
+- ✅ DONE **M8-06** Frontend: `PaymentPage.jsx` (Counter) — job lookup, show amount due (price - paid), payment form (amount, method, reference). Payment history accordion. "Record Payment" button.
+- ✅ DONE **M8-07** Commit: "feat: payment ledger"
 
 ---
 
