@@ -860,14 +860,14 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 14 — Integration & End-to-End Testing
 
-- [ ] **M14-01** Write happy-path E2E scenario test (manual or automated): Registration → Receipt → Claim → Price → Confirm → Complete → Pay → Pickup
-- [ ] **M14-02** Test all 13 acceptance criteria from SRS section 10 manually; document results
-- [ ] **M14-03** Test race condition: two browser tabs try to claim same job simultaneously
-- [ ] **M14-04** Test state machine rejections: try invalid transitions from API directly (not UI)
-- [ ] **M14-05** Test audit log immutability (direct SQL + API)
-- [ ] **M14-06** Test OTP lockout after 3 wrong attempts
-- [ ] **M14-07** Test registration expiry (manually set `expires_at` to past, run cron, verify Expired)
-- [ ] **M14-08** Commit: "test: e2e acceptance criteria"
+- ✅ DONE **M14-01** Write happy-path E2E scenario test (manual or automated): Registration → Receipt → Claim → Price → Confirm → Complete → Pay → Pickup
+- ✅ DONE **M14-02** Test all 13 acceptance criteria from SRS section 10 manually; document results
+- ✅ DONE **M14-03** Test race condition: two browser tabs try to claim same job simultaneously
+- ✅ DONE **M14-04** Test state machine rejections: try invalid transitions from API directly (not UI)
+- ✅ DONE **M14-05** Test audit log immutability (direct SQL + API)
+- ✅ DONE **M14-06** Test OTP lockout after 3 wrong attempts
+- ✅ DONE **M14-07** Test registration expiry (manually set `expires_at` to past, run cron, verify Expired)
+- ✅ DONE **M14-08** Commit: "test: e2e acceptance criteria"
 
 ---
 
