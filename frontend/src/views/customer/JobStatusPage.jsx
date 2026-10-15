@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { registrationApi } from '../../api/registration.api';
+import { pickupApi } from '../../api/pickup.api';
 import {
   Card,
   StatusBadge,
@@ -19,6 +20,7 @@ import {
   ShieldAlert,
   Sparkles,
   ChevronRight,
+  KeyRound,
 } from 'lucide-react';
 
 export function JobStatusPage() {
@@ -26,6 +28,8 @@ export function JobStatusPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [requestingCode, setRequestingCode] = useState(false);
+  const [codeRequested, setCodeRequested] = useState(false);
 
   const navigate = useNavigate();
 
@@ -52,6 +56,18 @@ export function JobStatusPage() {
     }, 20000);
     return () => clearInterval(interval);
   }, [fetchStatus]);
+
+  const handleRequestPickupCode = async () => {
+    try {
+      setRequestingCode(true);
+      await pickupApi.sendPickupCode(token);
+      setCodeRequested(true);
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to request pickup code.');
+    } finally {
+      setRequestingCode(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -266,9 +282,40 @@ export function JobStatusPage() {
             <div style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-sm)' }}>
               Shoes Ready for Collection!
             </div>
-            <div style={{ fontSize: 'var(--font-size-xs)', marginTop: 2 }}>
-              Visit our counter to pick up your shoes. When you arrive, counter staff will trigger your secure SMS pickup code.
+            <div style={{ fontSize: 'var(--font-size-xs)', marginTop: 2, marginBottom: 'var(--space-3)' }}>
+              Your repairs are complete. Please collect your shoes from the shop counter.
             </div>
+
+            {job.payment_status === 'Paid' ? (
+              codeRequested ? (
+                <div style={{
+                  padding: 'var(--space-3)',
+                  backgroundColor: 'var(--color-surface)',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: 'var(--font-size-xs)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                  <CheckCircle2 size={16} style={{ color: 'var(--color-success)', flexShrink: 0 }} />
+                  <span>Pickup code sent to your phone via SMS! Tell this code to staff when collecting.</span>
+                </div>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  block
+                  onClick={handleRequestPickupCode}
+                  loading={requestingCode}
+                >
+                  <KeyRound size={14} /> Request Pickup Code
+                </Button>
+              )
+            ) : (
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', marginTop: 4 }}>
+                Balance of {formatKES(job.balance_due || job.current_price)} due upon collection. You may pay at the counter and receive your release code.
+              </div>
+            )}
           </div>
         )}
 

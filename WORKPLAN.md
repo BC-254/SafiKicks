@@ -800,13 +800,13 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 9 — OTP Pickup
 
-- [ ] **M9-01** `POST /api/pickup/:jobId/send-code` — auth: repairer|counter_staff|owner; validate `payment_status=Paid`; generate 6-digit crypto OTP; hash and store in `pickup_codes`; send SMS (do NOT send plain code to API response); expires in 24h
-- [ ] **M9-02** `POST /api/pickup/:jobId/verify` — auth: repairer|counter_staff; verify OTP (compare hash); increment attempts; lock after 3 fails; if valid: transition to `Picked`; mark code used; log event; send "picked up" SMS
-- [ ] **M9-03** `POST /api/pickup/:jobId/request-new-code` — auth: counter_staff|owner; invalidate old code; generate new code; log
-- [ ] **M9-04** Never return the plain OTP in any API response. The only path is SMS → customer → verbal to staff. Verify in code review.
-- [ ] **M9-05** Frontend: `PickupPage.jsx` (Repairer/Counter) — job number input, OTP entry (6-box), verify button. Attempts remaining display. "Request Override" for lost phone scenario.
-- [ ] **M9-06** Frontend: `JobStatusPage.jsx` update — when job is `Completed` and `Paid`, show "Request Pickup Code" button → calls `send-code` → shows "Code sent to your phone" confirmation.
-- [ ] **M9-07** Commit: "feat: OTP pickup flow"
+- ✅ DONE **M9-01** `POST /api/pickup/:jobId/send-code` — auth: repairer|counter_staff|owner; validate `payment_status=Paid`; generate 6-digit crypto OTP; hash and store in `pickup_codes`; send SMS (do NOT send plain code to API response); expires in 24h
+- ✅ DONE **M9-02** `POST /api/pickup/:jobId/verify` — auth: repairer|counter_staff; verify OTP (compare hash); increment attempts; lock after 3 fails; if valid: transition to `Picked`; mark code used; log event; send "picked up" SMS
+- ✅ DONE **M9-03** `POST /api/pickup/:jobId/request-new-code` — auth: counter_staff|owner; invalidate old code; generate new code; log
+- ✅ DONE **M9-04** Never return the plain OTP in any API response. The only path is SMS → customer → verbal to staff. Verify in code review.
+- ✅ DONE **M9-05** Frontend: `PickupPage.jsx` (Repairer/Counter) — job number input, OTP entry (6-box), verify button. Attempts remaining display. "Request Override" for lost phone scenario.
+- ✅ DONE **M9-06** Frontend: `JobStatusPage.jsx` update — when job is `Completed` and `Paid`, show "Request Pickup Code" button → calls `send-code` → shows "Code sent to your phone" confirmation.
+- ✅ DONE **M9-07** Commit: "feat: OTP pickup flow"
 
 ---
 

@@ -28,6 +28,7 @@ import { ReceiptPage } from './views/counter/ReceiptPage';
 import { RegisterForCustomerPage } from './views/counter/RegisterForCustomerPage';
 import { AllJobsPage } from './views/counter/AllJobsPage';
 import { PaymentPage } from './views/counter/PaymentPage';
+import { PickupPage } from './views/counter/PickupPage';
 
 // Repairer Views
 import { QueuePage } from './views/repairer/QueuePage';
@@ -77,7 +78,7 @@ export default function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/job/:token" element={<JobStatusPage />} />
             <Route path="/job/:token/confirm-price" element={<PriceConfirmPage />} />
-            <Route path="/job/:token/pickup" element={<PlaceholderView title="Pickup Status" milestone="M9" role="Customer" />} />
+            <Route path="/job/:token/pickup" element={<Navigate to="../" replace />} />
           </Route>
 
           {/* Repairer Dashboard (Role: repairer) */}
@@ -92,7 +93,7 @@ export default function App() {
             <Route index element={<Navigate to="/repairer/queue" replace />} />
             <Route path="queue" element={<QueuePage />} />
             <Route path="jobs/:id" element={<JobDetailPage />} />
-            <Route path="pickup" element={<PlaceholderView title="Release Shoes (OTP)" milestone="M9" role="Repairer" />} />
+            <Route path="pickup" element={<PickupPage />} />
             <Route path="activity" element={<MyActivityPage />} />
           </Route>
 
@@ -109,6 +110,7 @@ export default function App() {
             <Route path="receipt" element={<ReceiptPage />} />
             <Route path="register" element={<RegisterForCustomerPage />} />
             <Route path="payment" element={<PaymentPage />} />
+            <Route path="pickup" element={<PickupPage />} />
             <Route path="jobs" element={<AllJobsPage />} />
           </Route>
 

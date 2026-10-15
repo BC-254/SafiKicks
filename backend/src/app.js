@@ -24,7 +24,7 @@ const receiptRoutes      = require('./routes/receipt.routes');
 const repairerRoutes     = require('./routes/repairer.routes');
 const pricingRoutes      = require('./routes/pricing.routes');
 const paymentRoutes      = require('./routes/payment.routes');
-// const pickupRoutes       = require('./routes/pickup.routes');
+const pickupRoutes       = require('./routes/pickup.routes');
 // const auditRoutes        = require('./routes/audit.routes');
 
 const app = express();
@@ -83,7 +83,7 @@ app.use('/api/repairer',     repairerRoutes);
 app.use('/api/job',          pricingRoutes);
 app.use('/api/counter',      paymentRoutes);
 app.use('/api/owner',        paymentRoutes);
-// app.use('/api/pickup',       pickupRoutes);
+app.use('/api/pickup',       pickupRoutes);
 // app.use('/api/audit',        auditRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────
