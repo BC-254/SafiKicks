@@ -24,7 +24,7 @@ const Price      = require('../models/price');
 const ServiceCatalog = require('../models/serviceCatalog');
 const smsService = require('../services/sms.service');
 const { assertTransition } = require('../services/stateMachine');
-const { logEvent } = require('../models/auditLog');
+const { logEvent, getAuditFeed, getJobTimeline } = require('../models/auditLog');
 const logger     = require('../utils/logger');
 
 // All routes in this file require owner role
@@ -1001,5 +1001,52 @@ router.get('/sms-volume', async (req, res, next) => {
   }
 });
 
+// ================================================================
+// IMMUTABLE AUDIT TRAIL (MILESTONE 12)
+// ================================================================
+
+// ── GET /api/owner/audit ──────────────────────────────────────
+// Paginated, filterable immutable audit feed
+router.get('/audit', async (req, res, next) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page || '1', 10));
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit || '50', 10)));
+    const { job_number, event_type, actor_label, date_from, date_to } = req.query;
+
+    const result = await getAuditFeed({
+      jobNumber: job_number || null,
+      eventType: event_type || null,
+      actorLabel: actor_label || null,
+      dateFrom: date_from || null,
+      dateTo: date_to ? `${date_to} 23:59:59.999` : null,
+      page,
+      limit,
+    });
+
+    res.json({
+      events: result.rows,
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: Math.ceil(result.total / limit),
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── GET /api/owner/jobs/:id/audit ─────────────────────────────
+// Full chronological timeline of events for a specific job
+router.get('/jobs/:id/audit', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const timeline = await getJobTimeline(id);
+    res.json({ timeline });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
+
 

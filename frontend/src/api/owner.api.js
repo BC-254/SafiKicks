@@ -44,4 +44,16 @@ export const ownerApi = {
     const res = await client.get('/owner/sms-volume');
     return res.data;
   },
+
+  // Paginated immutable audit trail feed
+  getAuditFeed: async (params = {}) => {
+    const res = await client.get('/owner/audit', { params });
+    return res.data;
+  },
+
+  // Single job audit timeline
+  getJobAuditTimeline: async (id) => {
+    const res = await client.get(`/owner/jobs/${id}/audit`);
+    return res.data;
+  },
 };

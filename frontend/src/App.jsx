@@ -27,6 +27,7 @@ import { DashboardPage } from './views/owner/DashboardPage';
 import { JobsPage } from './views/owner/JobsPage';
 import { ReconciliationPage } from './views/owner/ReconciliationPage';
 import { ReportsPage } from './views/owner/ReportsPage';
+import { AuditPage } from './views/owner/AuditPage';
 
 // Counter Views
 import { ReceiptPage } from './views/counter/ReceiptPage';
@@ -134,7 +135,7 @@ export default function App() {
             <Route path="approvals" element={<ApprovalsPage />} />
             <Route path="reconciliation" element={<ReconciliationPage />} />
             <Route path="reports" element={<ReportsPage />} />
-            <Route path="audit" element={<PlaceholderView title="Immutable Audit Trail" milestone="M12" role="Owner" />} />
+            <Route path="audit" element={<AuditPage />} />
             <Route path="catalog" element={<CatalogPage />} />
             <Route path="staff" element={<StaffPage />} />
           </Route>

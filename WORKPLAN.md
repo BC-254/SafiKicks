@@ -837,11 +837,11 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 12 — Audit Trail
 
-- [ ] **M12-01** `GET /api/owner/audit` — auth: owner; paginated audit log, filterable by job#, actor, event_type, date range
-- [ ] **M12-02** `GET /api/owner/jobs/:id/audit` — auth: owner|repairer(own)|counter_staff(own); full timeline for one job
-- [ ] **M12-03** Verify immutability: test that `UPDATE job_events` and `DELETE FROM job_events` both raise exceptions
-- [ ] **M12-04** Frontend: `AuditPage.jsx` — searchable/filterable audit table. Event type badges. Actor column. Old/new value expandable. Job link column.
-- [ ] **M12-05** Commit: "feat: audit trail"
+- ✅ DONE **M12-01** `GET /api/owner/audit` — auth: owner; paginated audit log, filterable by job#, actor, event_type, date range
+- ✅ DONE **M12-02** `GET /api/owner/jobs/:id/audit` — auth: owner|repairer(own)|counter_staff(own); full timeline for one job
+- ✅ DONE **M12-03** Verify immutability: test that `UPDATE job_events` and `DELETE FROM job_events` both raise exceptions
+- ✅ DONE **M12-04** Frontend: `AuditPage.jsx` — searchable/filterable audit table. Event type badges. Actor column. Old/new value expandable. Job link column.
+- ✅ DONE **M12-05** Commit: "feat: audit trail"
 
 ---
 
