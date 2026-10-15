@@ -83,7 +83,7 @@ const VALID_TRANSITIONS = Object.freeze({
     { to: JOB_STATUS.EXPIRED,   allowedRoles: ['system'] },
   ],
   [JOB_STATUS.IN_QUEUE]: [
-    { to: JOB_STATUS.AWAITING_CONFIRMATION, allowedRoles: [ROLES.REPAIRER] },
+    { to: JOB_STATUS.AWAITING_CONFIRMATION, allowedRoles: [ROLES.REPAIRER, ROLES.OWNER] },
   ],
   [JOB_STATUS.AWAITING_CONFIRMATION]: [
     { to: JOB_STATUS.STARTED,   allowedRoles: ['customer'] },
@@ -95,6 +95,7 @@ const VALID_TRANSITIONS = Object.freeze({
   ],
   [JOB_STATUS.ON_HOLD]: [
     { to: JOB_STATUS.STARTED,   allowedRoles: ['customer', ROLES.OWNER] },
+    { to: JOB_STATUS.AWAITING_CONFIRMATION, allowedRoles: [ROLES.REPAIRER, ROLES.OWNER] },
     { to: JOB_STATUS.CANCELLED, allowedRoles: ['customer', ROLES.OWNER] },
   ],
   [JOB_STATUS.COMPLETED]: [

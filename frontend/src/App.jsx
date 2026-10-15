@@ -27,6 +27,11 @@ import { ReceiptPage } from './views/counter/ReceiptPage';
 import { RegisterForCustomerPage } from './views/counter/RegisterForCustomerPage';
 import { AllJobsPage } from './views/counter/AllJobsPage';
 
+// Repairer Views
+import { QueuePage } from './views/repairer/QueuePage';
+import { JobDetailPage } from './views/repairer/JobDetailPage';
+import { MyActivityPage } from './views/repairer/MyActivityPage';
+
 // Placeholder view helper for pending milestones
 function PlaceholderView({ title, milestone, role }) {
   return (
@@ -83,10 +88,10 @@ export default function App() {
             }
           >
             <Route index element={<Navigate to="/repairer/queue" replace />} />
-            <Route path="queue" element={<PlaceholderView title="Repair Queue" milestone="M6" role="Repairer" />} />
-            <Route path="jobs/:id" element={<PlaceholderView title="Job Details & Pricing" milestone="M6" role="Repairer" />} />
+            <Route path="queue" element={<QueuePage />} />
+            <Route path="jobs/:id" element={<JobDetailPage />} />
             <Route path="pickup" element={<PlaceholderView title="Release Shoes (OTP)" milestone="M9" role="Repairer" />} />
-            <Route path="activity" element={<PlaceholderView title="My Repair Activity" milestone="M6" role="Repairer" />} />
+            <Route path="activity" element={<MyActivityPage />} />
           </Route>
 
           {/* Counter Staff Portal (Role: counter_staff, owner) */}

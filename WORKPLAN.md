@@ -761,17 +761,17 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 6 — Repairer Dashboard & Pricing
 
-- [ ] **M6-01** `GET /api/repairer/queue` — auth: repairer; returns jobs with `status='In Queue'` and `assigned_repairer IS NULL`, ordered by received_at
-- [ ] **M6-02** `POST /api/repairer/jobs/:id/claim` — auth: repairer; atomic UPDATE with WHERE `assigned_repairer IS NULL` (prevent race); set `assigned_repairer`; log event
-- [ ] **M6-03** `POST /api/repairer/jobs/:id/price` — auth: repairer (own job); validate price within band (or submit for approval if outside); create `price_versions` record; if in-band: send price SMS to customer and transition to `Awaiting Confirmation`; if out-of-band: create approval request, do NOT notify customer yet
-- [ ] **M6-04** `GET /api/repairer/jobs` — auth: repairer; returns own claimed jobs with any status
-- [ ] **M6-05** `GET /api/repairer/jobs/:id` — auth: repairer (own job) | owner; full job detail with photos, price versions, payments, audit log
-- [ ] **M6-06** `PATCH /api/repairer/jobs/:id/status` — auth: repairer; only `Started→Completed` and `Started→On Hold`; validate via state machine; log event; on Completed: send "shoes ready" SMS
-- [ ] **M6-07** `GET /api/repairer/activity` — auth: repairer; own jobs, grouped by status
-- [ ] **M6-08** Frontend: `QueuePage.jsx` — job cards in a clean list. Each card: job#, customer first name only, service, received time, price range chip. "Claim" pill button. Optimistic UI on claim.
-- [ ] **M6-09** Frontend: `JobDetailPage.jsx` (Repairer) — full job detail. Price proposal form (amount input with range hint, notes). Status update buttons (Completed / On Hold). Completion photo upload. Audit timeline accordion at bottom.
-- [ ] **M6-10** Frontend: `MyActivityPage.jsx` — own jobs by status; simple stats (jobs done today, week, revenue proposed).
-- [ ] **M6-11** Commit: "feat: repairer dashboard and pricing"
+- ✅ DONE **M6-01** `GET /api/repairer/queue` — auth: repairer; returns jobs with `status='In Queue'` and `assigned_repairer IS NULL`, ordered by received_at
+- ✅ DONE **M6-02** `POST /api/repairer/jobs/:id/claim` — auth: repairer; atomic UPDATE with WHERE `assigned_repairer IS NULL` (prevent race); set `assigned_repairer`; log event
+- ✅ DONE **M6-03** `POST /api/repairer/jobs/:id/price` — auth: repairer (own job); validate price within band (or submit for approval if outside); create `price_versions` record; if in-band: send price SMS to customer and transition to `Awaiting Confirmation`; if out-of-band: create approval request, do NOT notify customer yet
+- ✅ DONE **M6-04** `GET /api/repairer/jobs` — auth: repairer; returns own claimed jobs with any status
+- ✅ DONE **M6-05** `GET /api/repairer/jobs/:id` — auth: repairer (own job) | owner; full job detail with photos, price versions, payments, audit log
+- ✅ DONE **M6-06** `PATCH /api/repairer/jobs/:id/status` — auth: repairer; only `Started→Completed` and `Started→On Hold`; validate via state machine; log event; on Completed: send "shoes ready" SMS
+- ✅ DONE **M6-07** `GET /api/repairer/activity` — auth: repairer; own jobs, grouped by status
+- ✅ DONE **M6-08** Frontend: `QueuePage.jsx` — job cards in a clean list. Each card: job#, customer first name only, service, received time, price range chip. "Claim" pill button. Optimistic UI on claim.
+- ✅ DONE **M6-09** Frontend: `JobDetailPage.jsx` (Repairer) — full job detail. Price proposal form (amount input with range hint, notes). Status update buttons (Completed / On Hold). Completion photo upload. Audit timeline accordion at bottom.
+- ✅ DONE **M6-10** Frontend: `MyActivityPage.jsx` — own jobs by status; simple stats (jobs done today, week, revenue proposed).
+- ✅ DONE **M6-11** Commit: "feat: repairer dashboard and pricing"
 
 ---
 
