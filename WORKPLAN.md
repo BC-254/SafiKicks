@@ -847,14 +847,14 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 13 — Security Hardening
 
-- [ ] **M13-01** Confirm `SEC-02`: every route has auth middleware; no route relies on UI to enforce permissions
-- [ ] **M13-02** Confirm `SEC-03`: every status change goes through `stateMachine.isValidTransition()`; invalid transitions return 422
-- [ ] **M13-03** `SEC-04`: verify job tokens are 32-byte hex (64 chars) from `crypto.randomBytes`; not sequential
-- [ ] **M13-04** `SEC-05`: verify pickup OTPs hashed with bcrypt/argon2; rate-limited to 3 attempts
-- [ ] **M13-05** `SEC-06`: add HTTPS redirect middleware (trust proxy); confirm CSP headers via helmet
-- [ ] **M13-06** `SEC-07`: audit all API responses — no phone numbers in repairer-facing responses; no pickup codes in any response
-- [ ] **M13-07** Session auto-logout: frontend detects 401 → clears authStore → redirects to login. Inactivity timer (5 min) on shared device flag in config.
-- [ ] **M13-08** Commit: "feat: security hardening"
+- ✅ DONE **M13-01** Confirm `SEC-02`: every route has auth middleware; no route relies on UI to enforce permissions
+- ✅ DONE **M13-02** Confirm `SEC-03`: every status change goes through `stateMachine.isValidTransition()`; invalid transitions return 422
+- ✅ DONE **M13-03** `SEC-04`: verify job tokens are 32-byte hex (64 chars) from `crypto.randomBytes`; not sequential
+- ✅ DONE **M13-04** `SEC-05`: verify pickup OTPs hashed with bcrypt/argon2; rate-limited to 3 attempts
+- ✅ DONE **M13-05** `SEC-06`: add HTTPS redirect middleware (trust proxy); confirm CSP headers via helmet
+- ✅ DONE **M13-06** `SEC-07`: audit all API responses — no phone numbers in repairer-facing responses; no pickup codes in any response
+- ✅ DONE **M13-07** Session auto-logout: frontend detects 401 → clears authStore → redirects to login. Inactivity timer (5 min) on shared device flag in config.
+- ✅ DONE **M13-08** Commit: "feat: security hardening"
 
 ---
 

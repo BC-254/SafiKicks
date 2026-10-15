@@ -13,9 +13,14 @@ import {
   User,
 } from 'lucide-react';
 
+import { useInactivityLogout } from '../hooks/useInactivityLogout';
+
 export function StaffLayout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+
+  // Inactivity timeout for shared terminal protection (SEC-01 / M13-07)
+  useInactivityLogout();
 
   const handleLogout = async () => {
     await logout();

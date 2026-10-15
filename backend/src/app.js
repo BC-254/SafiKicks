@@ -46,6 +46,16 @@ app.use(cors({
 // ── Trust proxy (for rate limiting behind nginx/load balancer) ─
 app.set('trust proxy', 1);
 
+// ── HTTPS redirect (in production behind proxy - SEC-06) ──────
+if (env.IS_PROD) {
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https') {
+      return res.redirect(301, `https://${req.header('host')}${req.url}`);
+    }
+    next();
+  });
+}
+
 // ── HTTP logging ─────────────────────────────────────────────
 if (!env.IS_PROD) {
   app.use(morgan('dev'));
