@@ -22,7 +22,7 @@ const catalogRoutes      = require('./routes/catalog.routes');
 const registrationRoutes = require('./routes/registration.routes');
 const receiptRoutes      = require('./routes/receipt.routes');
 const repairerRoutes     = require('./routes/repairer.routes');
-// const pricingRoutes      = require('./routes/pricing.routes');
+const pricingRoutes      = require('./routes/pricing.routes');
 // const paymentRoutes      = require('./routes/payment.routes');
 // const pickupRoutes       = require('./routes/pickup.routes');
 // const auditRoutes        = require('./routes/audit.routes');
@@ -80,7 +80,7 @@ app.use('/api/register',     registrationRoutes);
 app.use('/api',              registrationRoutes); // provides /api/job/:token
 app.use('/api/receipt',      receiptRoutes);
 app.use('/api/repairer',     repairerRoutes);
-// app.use('/api/pricing',      pricingRoutes);
+app.use('/api/job',          pricingRoutes);
 // app.use('/api/counter',      paymentRoutes);
 // app.use('/api/pickup',       pickupRoutes);
 // app.use('/api/audit',        auditRoutes);

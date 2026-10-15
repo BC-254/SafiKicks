@@ -17,6 +17,7 @@ import { LoginPage } from './views/auth/LoginPage';
 // Customer Views
 import { RegisterPage } from './views/customer/RegisterPage';
 import { JobStatusPage } from './views/customer/JobStatusPage';
+import { PriceConfirmPage } from './views/customer/PriceConfirmPage';
 
 // Owner Views
 import { StaffPage } from './views/owner/StaffPage';
@@ -74,7 +75,7 @@ export default function App() {
           <Route element={<CustomerLayout />}>
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/job/:token" element={<JobStatusPage />} />
-            <Route path="/job/:token/confirm-price" element={<PlaceholderView title="Confirm Price" milestone="M7" role="Customer" />} />
+            <Route path="/job/:token/confirm-price" element={<PriceConfirmPage />} />
             <Route path="/job/:token/pickup" element={<PlaceholderView title="Pickup Status" milestone="M9" role="Customer" />} />
           </Route>
 

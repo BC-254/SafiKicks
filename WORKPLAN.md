@@ -777,12 +777,12 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 7 — Price Confirmation (Customer)
 
-- [ ] **M7-01** `GET /api/job/:token/price` — public; return latest price version if status=`Awaiting Confirmation`
-- [ ] **M7-02** `POST /api/job/:token/price/confirm` — customer confirms; transition to `Started`; log event; send "work authorized" internal note (no SMS)
-- [ ] **M7-03** `POST /api/job/:token/price/decline` — customer declines; transition to `Cancelled`; log event; notify repairer (in-app or owner SMS)
-- [ ] **M7-04** On-Hold re-pricing: when repairer puts job On Hold and submits revised price, create new `price_versions` record, send "Revised price" SMS with confirm link; customer must re-confirm
-- [ ] **M7-05** Frontend: `PriceConfirmPage.jsx` — show: service, price proposed, price range. Two large buttons: "✓ Confirm — KES 350" and "✗ Decline". Success/declined states. No auth required (token in URL).
-- [ ] **M7-06** Commit: "feat: price confirmation flow"
+- ✅ DONE **M7-01** `GET /api/job/:token/price` — public; return latest price version if status=`Awaiting Confirmation`
+- ✅ DONE **M7-02** `POST /api/job/:token/price/confirm` — customer confirms; transition to `Started`; log event; send "work authorized" internal note (no SMS)
+- ✅ DONE **M7-03** `POST /api/job/:token/price/decline` — customer declines; transition to `Cancelled`; log event; notify repairer (in-app or owner SMS)
+- ✅ DONE **M7-04** On-Hold re-pricing: when repairer puts job On Hold and submits revised price, create new `price_versions` record, send "Revised price" SMS with confirm link; customer must re-confirm
+- ✅ DONE **M7-05** Frontend: `PriceConfirmPage.jsx` — show: service, price proposed, price range. Two large buttons: "✓ Confirm — KES 350" and "✗ Decline". Success/declined states. No auth required (token in URL).
+- ✅ DONE **M7-06** Commit: "feat: price confirmation flow"
 
 ---
 
