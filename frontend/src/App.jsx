@@ -23,6 +23,10 @@ import { PriceConfirmPage } from './views/customer/PriceConfirmPage';
 import { StaffPage } from './views/owner/StaffPage';
 import { CatalogPage } from './views/owner/CatalogPage';
 import { ApprovalsPage } from './views/owner/ApprovalsPage';
+import { DashboardPage } from './views/owner/DashboardPage';
+import { JobsPage } from './views/owner/JobsPage';
+import { ReconciliationPage } from './views/owner/ReconciliationPage';
+import { ReportsPage } from './views/owner/ReportsPage';
 
 // Counter Views
 import { ReceiptPage } from './views/counter/ReceiptPage';
@@ -125,11 +129,11 @@ export default function App() {
             }
           >
             <Route index element={<Navigate to="/owner/dashboard" replace />} />
-            <Route path="dashboard" element={<PlaceholderView title="Executive Overview" milestone="M11" role="Owner" />} />
-            <Route path="jobs" element={<PlaceholderView title="Job Oversight" milestone="M11" role="Owner" />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="jobs" element={<JobsPage />} />
             <Route path="approvals" element={<ApprovalsPage />} />
-            <Route path="reconciliation" element={<PlaceholderView title="Daily Cash Close" milestone="M11" role="Owner" />} />
-            <Route path="reports" element={<PlaceholderView title="Revenue & SMS Analytics" milestone="M11" role="Owner" />} />
+            <Route path="reconciliation" element={<ReconciliationPage />} />
+            <Route path="reports" element={<ReportsPage />} />
             <Route path="audit" element={<PlaceholderView title="Immutable Audit Trail" milestone="M12" role="Owner" />} />
             <Route path="catalog" element={<CatalogPage />} />
             <Route path="staff" element={<StaffPage />} />

@@ -295,6 +295,21 @@ CREATE TABLE IF NOT EXISTS day_close (
 CREATE INDEX IF NOT EXISTS idx_day_close_date ON day_close(close_date DESC);
 
 -- ================================================================
+-- TABLE: sms_log
+-- Audit log of SMS dispatches for volume tracking and analytics.
+-- ================================================================
+CREATE TABLE IF NOT EXISTS sms_log (
+  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  phone       VARCHAR(20) NOT NULL,
+  message     TEXT        NOT NULL,
+  status      VARCHAR(20) NOT NULL DEFAULT 'sent',
+  message_id  VARCHAR(100),
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_sms_log_created_at ON sms_log(created_at DESC);
+
+-- ================================================================
 -- TABLE: phone_verifications
 -- Short-lived codes sent to customers for registration verification.
 -- ================================================================

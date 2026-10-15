@@ -16,6 +16,20 @@
 
 const env    = require('../config/env');
 const logger = require('../utils/logger');
+const db     = require('../config/db');
+
+// ── Record SMS dispatch to audit log ──────────────────────────
+const logSmsDispatch = async (phone, message, status, messageId) => {
+  try {
+    await db.query(
+      `INSERT INTO sms_log (phone, message, status, message_id)
+       VALUES ($1, $2, $3, $4)`,
+      [phone, message, status, messageId]
+    );
+  } catch (err) {
+    logger.warn('Failed to record SMS dispatch to sms_log', { error: err.message });
+  }
+};
 
 // ── Low-level send ────────────────────────────────────────────
 
@@ -28,7 +42,9 @@ const logger = require('../utils/logger');
 const sendSMS = async (to, message) => {
   if (env.SMS_MODE === 'mock') {
     logger.info('[SMS MOCK]', { to, message });
-    return { success: true, messageId: `mock-${Date.now()}` };
+    const messageId = `mock-${Date.now()}`;
+    await logSmsDispatch(to, message, 'sent', messageId);
+    return { success: true, messageId };
   }
 
   if (env.SMS_PROVIDER === 'africastalking') {
@@ -36,6 +52,7 @@ const sendSMS = async (to, message) => {
   }
 
   logger.warn('No SMS provider configured', { SMS_PROVIDER: env.SMS_PROVIDER });
+  await logSmsDispatch(to, message, 'failed', null);
   return { success: false, error: 'No SMS provider configured' };
 };
 

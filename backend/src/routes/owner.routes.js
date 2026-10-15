@@ -499,4 +499,507 @@ router.post('/pickup-override', async (req, res, next) => {
   }
 });
 
+// ================================================================
+// OWNER DASHBOARD & REPORTS (MILESTONE 11)
+// ================================================================
+
+// ── GET /api/owner/dashboard ──────────────────────────────────
+// Executive aggregates, KPIs, today's activity & cash summary
+router.get('/dashboard', async (req, res, next) => {
+  try {
+    // 1. Total Active Jobs & Status breakdown
+    const statusRes = await db.query(
+      `SELECT status, COUNT(*)::int AS count
+       FROM jobs
+       GROUP BY status`
+    );
+
+    const statusCounts = {};
+    let activeJobs = 0;
+    const inactiveStatuses = ['Picked', 'Cancelled', 'Closed', 'Abandoned', 'Expired'];
+
+    statusRes.rows.forEach((row) => {
+      statusCounts[row.status] = row.count;
+      if (!inactiveStatuses.includes(row.status)) {
+        activeJobs += row.count;
+      }
+    });
+
+    // 2. Today's Revenue (payments minus reversals)
+    const revRes = await db.query(
+      `SELECT COALESCE(SUM(CASE WHEN type = 'payment' THEN amount ELSE -amount END), 0)::numeric(10,2) AS today_revenue
+       FROM payments
+       WHERE created_at >= CURRENT_DATE`
+    );
+    const todayRevenue = parseFloat(revRes.rows[0]?.today_revenue || 0);
+
+    // 3. Completed Today
+    const compRes = await db.query(
+      `SELECT COUNT(*)::int AS completed_today
+       FROM jobs
+       WHERE status = 'Completed' AND updated_at >= CURRENT_DATE`
+    );
+    const completedToday = compRes.rows[0]?.completed_today || 0;
+
+    // 4. Ready for Pickup
+    const readyForPickup = statusCounts['Completed'] || 0;
+
+    // 5. Pending Approvals Count
+    const appRes = await db.query(
+      `SELECT COUNT(*)::int AS pending_count
+       FROM approvals
+       WHERE decision IS NULL`
+    );
+    const pendingApprovals = appRes.rows[0]?.pending_count || 0;
+
+    // 6. Cash Drawer Status for Today
+    const cashRes = await db.query(
+      `SELECT COALESCE(SUM(CASE WHEN type = 'payment' THEN amount ELSE -amount END), 0)::numeric(10,2) AS cash_expected
+       FROM payments
+       WHERE method = 'cash' AND created_at >= CURRENT_DATE`
+    );
+    const cashExpectedToday = parseFloat(cashRes.rows[0]?.cash_expected || 0);
+
+    const closeRes = await db.query(
+      `SELECT * FROM day_close WHERE close_date = CURRENT_DATE`
+    );
+    const dayCloseRecord = closeRes.rows[0] || null;
+
+    // 7. Recent Jobs Feed
+    const recentRes = await db.query(
+      `SELECT
+         j.id,
+         j.job_number,
+         j.status,
+         j.payment_status,
+         j.shoe_brand,
+         j.shoe_color,
+         j.registered_at,
+         j.received_at,
+         c.name AS customer_name,
+         c.phone AS customer_phone,
+         sc.name AS service_name,
+         u.name AS repairer_name,
+         pv.amount AS latest_price
+       FROM jobs j
+       JOIN customers c ON j.customer_id = c.id
+       JOIN service_catalog sc ON j.service_id = sc.id
+       LEFT JOIN users u ON j.assigned_repairer = u.id
+       LEFT JOIN LATERAL (
+         SELECT amount FROM price_versions WHERE job_id = j.id ORDER BY version_number DESC LIMIT 1
+       ) pv ON TRUE
+       ORDER BY j.registered_at DESC
+       LIMIT 8`
+    );
+
+    res.json({
+      kpis: {
+        activeJobs,
+        todayRevenue,
+        completedToday,
+        readyForPickup,
+        pendingApprovals,
+      },
+      statusCounts,
+      cashSummary: {
+        expectedCashToday: cashExpectedToday,
+        isClosed: Boolean(dayCloseRecord),
+        dayClose: dayCloseRecord,
+      },
+      recentJobs: recentRes.rows,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── GET /api/owner/jobs ───────────────────────────────────────
+// Full paginated, searchable, filterable oversight of all jobs
+router.get('/jobs', async (req, res, next) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page || '1', 10));
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit || '20', 10)));
+    const offset = (page - 1) * limit;
+
+    const { status, payment_status, repairer_id, date_from, date_to, q } = req.query;
+
+    const conditions = ['1=1'];
+    const params = [];
+
+    if (status) {
+      params.push(status);
+      conditions.push(`j.status = $${params.length}`);
+    }
+
+    if (payment_status) {
+      params.push(payment_status);
+      conditions.push(`j.payment_status = $${params.length}`);
+    }
+
+    if (repairer_id) {
+      params.push(repairer_id);
+      conditions.push(`j.assigned_repairer = $${params.length}`);
+    }
+
+    if (date_from) {
+      params.push(date_from);
+      conditions.push(`j.registered_at >= $${params.length}`);
+    }
+
+    if (date_to) {
+      params.push(`${date_to} 23:59:59.999`);
+      conditions.push(`j.registered_at <= $${params.length}`);
+    }
+
+    if (q && q.trim()) {
+      params.push(`%${q.trim()}%`);
+      const pIdx = params.length;
+      conditions.push(`(
+        j.job_number ILIKE $${pIdx} OR
+        c.name ILIKE $${pIdx} OR
+        c.phone ILIKE $${pIdx} OR
+        j.shoe_brand ILIKE $${pIdx}
+      )`);
+    }
+
+    const whereClause = conditions.join(' AND ');
+
+    // Count total matching jobs
+    const countRes = await db.query(
+      `SELECT COUNT(*)::int AS total
+       FROM jobs j
+       JOIN customers c ON j.customer_id = c.id
+       WHERE ${whereClause}`,
+      params
+    );
+    const total = countRes.rows[0]?.total || 0;
+
+    // Fetch paginated rows with full metadata
+    const queryParams = [...params, limit, offset];
+    const dataRes = await db.query(
+      `SELECT
+         j.id,
+         j.job_number,
+         j.status,
+         j.payment_status,
+         j.shoe_brand,
+         j.shoe_color,
+         j.notes AS problem_description,
+         j.registered_at,
+         j.received_at,
+         j.picked_at,
+         c.id AS customer_id,
+         c.name AS customer_name,
+         c.phone AS customer_phone,
+         sc.id AS service_id,
+         sc.name AS service_name,
+         u.id AS repairer_id,
+         u.name AS repairer_name,
+         pv.amount AS latest_price,
+         COALESCE(pay.total_paid, 0)::numeric(10,2) AS total_paid
+       FROM jobs j
+       JOIN customers c ON j.customer_id = c.id
+       JOIN service_catalog sc ON j.service_id = sc.id
+       LEFT JOIN users u ON j.assigned_repairer = u.id
+       LEFT JOIN LATERAL (
+         SELECT amount FROM price_versions WHERE job_id = j.id ORDER BY version_number DESC LIMIT 1
+       ) pv ON TRUE
+       LEFT JOIN LATERAL (
+         SELECT SUM(CASE WHEN type = 'payment' THEN amount ELSE -amount END) AS total_paid
+         FROM payments WHERE job_id = j.id
+       ) pay ON TRUE
+       WHERE ${whereClause}
+       ORDER BY j.registered_at DESC
+       LIMIT $${queryParams.length - 1} OFFSET $${queryParams.length}`,
+      queryParams
+    );
+
+    res.json({
+      jobs: dataRes.rows,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── GET /api/owner/jobs/:id ───────────────────────────────────
+// Comprehensive single job detail for slide-over inspection
+router.get('/jobs/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const jobRes = await db.query(
+      `SELECT
+         j.*,
+         c.name AS customer_name,
+         c.phone AS customer_phone,
+         sc.name AS service_name,
+         sc.min_price AS catalog_min_price,
+         sc.max_price AS catalog_max_price,
+         u.name AS repairer_name,
+         u.email AS repairer_email
+       FROM jobs j
+       JOIN customers c ON j.customer_id = c.id
+       JOIN service_catalog sc ON j.service_id = sc.id
+       LEFT JOIN users u ON j.assigned_repairer = u.id
+       WHERE j.id = $1`,
+      [id]
+    );
+
+    if (jobRes.rows.length === 0) {
+      return res.status(404).json({ error: 'Job not found.' });
+    }
+
+    const job = jobRes.rows[0];
+
+    // Photos
+    const photosRes = await db.query(
+      `SELECT p.*, u.name AS taken_by_name
+       FROM photos p
+       JOIN users u ON p.taken_by = u.id
+       WHERE p.job_id = $1
+       ORDER BY p.created_at ASC`,
+      [id]
+    );
+
+    // Price versions
+    const priceRes = await db.query(
+      `SELECT pv.*, u_prop.name AS proposed_by_name, u_app.name AS approved_by_name
+       FROM price_versions pv
+       JOIN users u_prop ON pv.proposed_by = u_prop.id
+       LEFT JOIN users u_app ON pv.approved_by = u_app.id
+       WHERE pv.job_id = $1
+       ORDER BY pv.version_number ASC`,
+      [id]
+    );
+
+    // Payments
+    const payRes = await db.query(
+      `SELECT p.*, u.name AS received_by_name
+       FROM payments p
+       JOIN users u ON p.received_by = u.id
+       WHERE p.job_id = $1
+       ORDER BY p.created_at ASC`,
+      [id]
+    );
+
+    // Approvals
+    const appRes = await db.query(
+      `SELECT a.*, u_req.name AS requested_by_name, u_dec.name AS decided_by_name
+       FROM approvals a
+       JOIN users u_req ON a.requested_by = u_req.id
+       LEFT JOIN users u_dec ON a.decided_by = u_dec.id
+       WHERE a.job_id = $1
+       ORDER BY a.requested_at ASC`,
+      [id]
+    );
+
+    res.json({
+      job,
+      photos: photosRes.rows,
+      priceVersions: priceRes.rows,
+      payments: payRes.rows,
+      approvals: appRes.rows,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── GET /api/owner/reports/daily ──────────────────────────────
+// Daily financial and operational report for a specific date
+router.get('/reports/daily', async (req, res, next) => {
+  try {
+    const reportDate = req.query.date || new Date().toISOString().split('T')[0];
+
+    // 1. Daily operational counts
+    const countsRes = await db.query(
+      `SELECT
+         COUNT(CASE WHEN DATE(j.registered_at) = $1 OR DATE(j.received_at) = $1 THEN 1 END)::int AS jobs_received,
+         COUNT(CASE WHEN j.status = 'Completed' AND DATE(j.updated_at) = $1 THEN 1 END)::int AS jobs_completed,
+         COUNT(CASE WHEN j.status = 'Picked' AND DATE(j.picked_at) = $1 THEN 1 END)::int AS jobs_picked
+       FROM jobs j`,
+      [reportDate]
+    );
+    const opsCounts = countsRes.rows[0];
+
+    // 2. Total revenue for the date
+    const revRes = await db.query(
+      `SELECT COALESCE(SUM(CASE WHEN type = 'payment' THEN amount ELSE -amount END), 0)::numeric(10,2) AS total_revenue
+       FROM payments
+       WHERE DATE(created_at) = $1`,
+      [reportDate]
+    );
+    const totalRevenue = parseFloat(revRes.rows[0]?.total_revenue || 0);
+
+    // 3. Revenue by Service
+    const serviceRes = await db.query(
+      `SELECT
+         sc.name AS service_name,
+         COUNT(DISTINCT j.id)::int AS job_count,
+         COALESCE(SUM(CASE WHEN p.type = 'payment' THEN p.amount ELSE -p.amount END), 0)::numeric(10,2) AS revenue
+       FROM payments p
+       JOIN jobs j ON p.job_id = j.id
+       JOIN service_catalog sc ON j.service_id = sc.id
+       WHERE DATE(p.created_at) = $1
+       GROUP BY sc.name
+       ORDER BY revenue DESC`,
+      [reportDate]
+    );
+
+    // 4. Payment Methods Breakdown
+    const methodRes = await db.query(
+      `SELECT
+         method,
+         COUNT(*)::int AS count,
+         COALESCE(SUM(CASE WHEN type = 'payment' THEN amount ELSE -amount END), 0)::numeric(10,2) AS total
+       FROM payments
+       WHERE DATE(created_at) = $1
+       GROUP BY method
+       ORDER BY total DESC`,
+      [reportDate]
+    );
+
+    // 5. Day Close record if present
+    const closeRes = await db.query(
+      `SELECT dc.*, u.name AS closed_by_name
+       FROM day_close dc
+       JOIN users u ON dc.closed_by = u.id
+       WHERE dc.close_date = $1`,
+      [reportDate]
+    );
+
+    res.json({
+      date: reportDate,
+      jobsReceived: opsCounts.jobs_received,
+      jobsCompleted: opsCounts.jobs_completed,
+      jobsPicked: opsCounts.jobs_picked,
+      totalRevenue,
+      serviceBreakdown: serviceRes.rows,
+      paymentMethodsBreakdown: methodRes.rows,
+      dayClose: closeRes.rows[0] || null,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── POST /api/owner/day-close ─────────────────────────────────
+// Cash drawer reconciliation: records counted cash vs expected cash
+router.post('/day-close', async (req, res, next) => {
+  try {
+    const { close_date, cash_counted, bank_deposit_reference, notes } = req.body;
+
+    const dateToClose = close_date || new Date().toISOString().split('T')[0];
+
+    if (cash_counted === undefined || cash_counted === null || isNaN(Number(cash_counted))) {
+      return res.status(400).json({ error: 'Valid cash counted amount is required.' });
+    }
+
+    const counted = parseFloat(cash_counted);
+    if (counted < 0) {
+      return res.status(400).json({ error: 'Cash counted cannot be negative.' });
+    }
+
+    // Compute expected cash from database payments for that date
+    const expectedRes = await db.query(
+      `SELECT COALESCE(SUM(CASE WHEN type = 'payment' THEN amount ELSE -amount END), 0)::numeric(10,2) AS cash_expected
+       FROM payments
+       WHERE method = 'cash' AND DATE(created_at) = $1`,
+      [dateToClose]
+    );
+    const cashExpected = parseFloat(expectedRes.rows[0]?.cash_expected || 0);
+    const variance = counted - cashExpected;
+
+    // Upsert into day_close table
+    const result = await db.query(
+      `INSERT INTO day_close (close_date, cash_expected, cash_counted, bank_deposit_reference, closed_by, notes)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (close_date) DO UPDATE
+       SET cash_expected = EXCLUDED.cash_expected,
+           cash_counted = EXCLUDED.cash_counted,
+           bank_deposit_reference = EXCLUDED.bank_deposit_reference,
+           closed_by = EXCLUDED.closed_by,
+           notes = EXCLUDED.notes
+       RETURNING *`,
+      [
+        dateToClose,
+        cashExpected,
+        counted,
+        bank_deposit_reference?.trim() || null,
+        req.user.id,
+        notes?.trim() || null,
+      ]
+    );
+
+    logger.info('Daily cash close recorded', {
+      date: dateToClose,
+      cashExpected,
+      cashCounted: counted,
+      variance,
+      closedBy: req.user.name,
+    });
+
+    res.json({
+      success: true,
+      message: `Daily close for ${dateToClose} saved successfully.`,
+      dayClose: result.rows[0],
+      variance,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── GET /api/owner/day-close/history ──────────────────────────
+// History of recent daily closes and variances
+router.get('/day-close/history', async (req, res, next) => {
+  try {
+    const historyRes = await db.query(
+      `SELECT
+         dc.*,
+         (dc.cash_counted - dc.cash_expected)::numeric(10,2) AS variance,
+         u.name AS closed_by_name
+       FROM day_close dc
+       JOIN users u ON dc.closed_by = u.id
+       ORDER BY dc.close_date DESC
+       LIMIT 30`
+    );
+
+    res.json({ history: historyRes.rows });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── GET /api/owner/sms-volume ─────────────────────────────────
+// Daily count of SMS messages dispatched for the last 30 days
+router.get('/sms-volume', async (req, res, next) => {
+  try {
+    const resSms = await db.query(
+      `SELECT
+         d::date AS date,
+         COALESCE(COUNT(s.id), 0)::int AS count
+       FROM generate_series(CURRENT_DATE - INTERVAL '29 days', CURRENT_DATE, '1 day'::interval) d
+       LEFT JOIN sms_log s ON DATE(s.created_at) = d::date
+       GROUP BY d::date
+       ORDER BY d::date ASC`
+    );
+
+    const totalSent = resSms.rows.reduce((sum, r) => sum + r.count, 0);
+
+    res.json({
+      dailyVolume: resSms.rows,
+      totalSent,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
+

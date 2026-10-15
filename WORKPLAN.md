@@ -822,16 +822,16 @@ Each task is atomic. Complete and mark `✅ DONE` before moving to the next.
 
 ### MILESTONE 11 — Owner Dashboard & Reports
 
-- [ ] **M11-01** `GET /api/owner/dashboard` — auth: owner; aggregate: total active jobs by status, today's revenue, jobs completed today, jobs ready for pickup, pending approvals count
-- [ ] **M11-02** `GET /api/owner/jobs` — auth: owner; paginated, filterable (status, date range, repairer, payment_status), searchable (job#, customer name)
-- [ ] **M11-03** `GET /api/owner/reports/daily` — auth: owner; for a given date: jobs received, completed, picked, revenue by service, payment methods breakdown
-- [ ] **M11-04** `POST /api/owner/day-close` — auth: owner; record cash expected (computed), cash counted, bank deposit ref, notes; persist to `day_close` table
-- [ ] **M11-05** `GET /api/owner/sms-volume` — auth: owner; count of SMS sent per day for last 30 days
-- [ ] **M11-06** Frontend: `DashboardPage.jsx` (Owner) — 4 KPI cards (Active Jobs, Today Revenue, Ready Pickup, Pending Approvals). Today's jobs mini-table. Cash reconciliation summary. Quick action shortcuts.
-- [ ] **M11-07** Frontend: `ReconciliationPage.jsx` — date picker, show computed expected cash, input counted cash, difference highlighted (green/red), bank deposit ref field, "Close Day" button.
-- [ ] **M11-08** Frontend: `JobsPage.jsx` (Owner) — full filterable table. Clicking a row opens full job detail slide-over panel. Status filter chips. Date range picker.
-- [ ] **M11-09** Frontend: `ReportsPage.jsx` — daily revenue bar chart (using native SVG or lightweight chart lib). Payment methods donut. SMS volume table. Date range selector.
-- [ ] **M11-10** Commit: "feat: owner dashboard and reports"
+- ✅ DONE **M11-01** `GET /api/owner/dashboard` — auth: owner; aggregate: total active jobs by status, today's revenue, jobs completed today, jobs ready for pickup, pending approvals count
+- ✅ DONE **M11-02** `GET /api/owner/jobs` — auth: owner; paginated, filterable (status, date range, repairer, payment_status), searchable (job#, customer name)
+- ✅ DONE **M11-03** `GET /api/owner/reports/daily` — auth: owner; for a given date: jobs received, completed, picked, revenue by service, payment methods breakdown
+- ✅ DONE **M11-04** `POST /api/owner/day-close` — auth: owner; record cash expected (computed), cash counted, bank deposit ref, notes; persist to `day_close` table
+- ✅ DONE **M11-05** `GET /api/owner/sms-volume` — auth: owner; count of SMS sent per day for last 30 days
+- ✅ DONE **M11-06** Frontend: `DashboardPage.jsx` (Owner) — 4 KPI cards (Active Jobs, Today Revenue, Ready Pickup, Pending Approvals). Today's jobs mini-table. Cash reconciliation summary. Quick action shortcuts.
+- ✅ DONE **M11-07** Frontend: `ReconciliationPage.jsx` — date picker, show computed expected cash, input counted cash, difference highlighted (green/red), bank deposit ref field, "Close Day" button.
+- ✅ DONE **M11-08** Frontend: `JobsPage.jsx` (Owner) — full filterable table. Clicking a row opens full job detail slide-over panel. Status filter chips. Date range picker.
+- ✅ DONE **M11-09** Frontend: `ReportsPage.jsx` — daily revenue bar chart (using native SVG or lightweight chart lib). Payment methods donut. SMS volume table. Date range selector.
+- ✅ DONE **M11-10** Commit: "feat: owner dashboard and reports"
 
 ---
 
