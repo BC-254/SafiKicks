@@ -5,6 +5,8 @@
  */
 
 require('dotenv').config();
+const path        = require('path');
+const fs          = require('fs');
 const express     = require('express');
 const cors        = require('cors');
 const helmet      = require('helmet');
@@ -32,7 +34,7 @@ const app = express();
 // ── Security headers ─────────────────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow image serving
-  contentSecurityPolicy: env.IS_PROD ? undefined : false,  // relax CSP in dev
+  contentSecurityPolicy: false,
 }));
 
 // ── CORS ─────────────────────────────────────────────────────
@@ -95,6 +97,18 @@ app.use('/api/counter',      paymentRoutes);
 app.use('/api/owner',        paymentRoutes);
 app.use('/api/pickup',       pickupRoutes);
 // app.use('/api/audit',        auditRoutes);
+
+// ── Serve React SPA in production if built ─────────────────────
+const frontendDist = path.resolve(__dirname, '../../frontend/dist');
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads') || req.path.startsWith('/health')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
 
 // ── 404 handler ───────────────────────────────────────────────
 app.use((_req, res) => {

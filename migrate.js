@@ -14,15 +14,30 @@
 
 require('dotenv').config({ path: __dirname + '/backend/.env' });
 
-const { Client } = require('pg');
+let pg;
+try {
+  pg = require('pg');
+} catch {
+  pg = require(path.join(__dirname, 'backend', 'node_modules', 'pg'));
+}
+const { Client } = pg;
 const fs = require('fs');
 const path = require('path');
 
 const schemaPath = path.join(__dirname, 'database', 'schema.sql');
 
 async function migrate() {
+  if (!process.env.DATABASE_URL) {
+    console.error('❌ DATABASE_URL is not set. Please set the DATABASE_URL environment variable.');
+    process.exit(1);
+  }
+
+  const isRemoteDb = process.env.NODE_ENV === 'production' || 
+    (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('localhost') && !process.env.DATABASE_URL.includes('127.0.0.1'));
+
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
+    ssl: isRemoteDb ? { rejectUnauthorized: false } : false,
   });
 
   try {
