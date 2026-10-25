@@ -1,5 +1,5 @@
 /**
- * e2e.test.js — Comprehensive End-to-End Test Suite for SoleCare
+ * e2e.test.js — Comprehensive End-to-End Test Suite for Safi Kicks
  */
 
 'use strict';
@@ -59,7 +59,7 @@ function request(method, path, { headers = {}, body = null } = {}) {
 }
 
 async function runTests() {
-  console.log('🧪 Starting SoleCare End-to-End Test Suite...\n');
+  console.log('🧪 Starting Safi Kicks End-to-End Test Suite...\n');
 
   // Start test server on random free port
   server = app.listen(0);
@@ -93,19 +93,19 @@ async function runTests() {
     // ── 2. Auth & RBAC ────────────────────────────────────────
     console.log('\n--- 2. Authentication & RBAC Tests ---');
     const ownerLogin = await request('POST', '/api/auth/login', {
-      body: { email: 'owner@solecare.co.ke', password: 'ChangeMe123!' },
+      body: { email: 'owner@safikicks.co.ke', password: 'ChangeMe123!' },
     });
     assert(ownerLogin.status === 200 && ownerLogin.data.token && ownerLogin.data.user.role === 'owner', 'Owner login successful');
     const ownerToken = ownerLogin.data.token;
 
     const repairerLogin = await request('POST', '/api/auth/login', {
-      body: { email: 'joseph@solecare.co.ke', password: 'SecureRepairer123!' },
+      body: { email: 'joseph@safikicks.co.ke', password: 'SecureRepairer123!' },
     });
     assert(repairerLogin.status === 200 && repairerLogin.data.token && repairerLogin.data.user.role === 'repairer', 'Repairer login successful');
     const repairerToken = repairerLogin.data.token;
 
     const counterLogin = await request('POST', '/api/auth/login', {
-      body: { email: 'grace@solecare.co.ke', password: 'CounterStaff123!' },
+      body: { email: 'grace@safikicks.co.ke', password: 'CounterStaff123!' },
     });
     assert(counterLogin.status === 200 && counterLogin.data.token && counterLogin.data.user.role === 'counter_staff', 'Counter Staff login successful');
     const counterToken = counterLogin.data.token;

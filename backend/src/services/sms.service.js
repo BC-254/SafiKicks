@@ -18,7 +18,7 @@ const env    = require('../config/env');
 const logger = require('../utils/logger');
 const db     = require('../config/db');
 
-// ── Record SMS dispatch to audit log ──────────────────────────
+// Record SMS dispatch to audit log 
 const logSmsDispatch = async (phone, message, status, messageId) => {
   try {
     await db.query(
@@ -31,14 +31,8 @@ const logSmsDispatch = async (phone, message, status, messageId) => {
   }
 };
 
-// ── Low-level send ────────────────────────────────────────────
+// Low-level send 
 
-/**
- * Send an SMS to a verified phone number.
- * @param {string} to      - E.164 phone number e.g. "+254712345678"
- * @param {string} message - Plain text body (keep under 160 chars for 1 part)
- * @returns {Promise<{ success: boolean, messageId?: string, error?: string }>}
- */
 const sendSMS = async (to, message) => {
   if (env.SMS_MODE === 'mock') {
     logger.info('[SMS MOCK]', { to, message });
@@ -77,7 +71,7 @@ const sendViaAfricasTalking = async (to, message) => {
     const result = await client.SMS.send({
       to:      [to],
       message,
-      from:    'SoleCare',  // sender ID — must be approved by AT
+      from:    env.SMS_SENDER_ID || 'SafiKicks',  // sender ID — must be approved by AT
     });
 
     const recipient = result.SMSMessageData?.Recipients?.[0];
@@ -105,58 +99,58 @@ const templates = {
    * CRITICAL: This is the ONLY time a code appears in an SMS text.
    */
   phoneVerification: (code) =>
-    `Your SoleCare verification code is: ${code}. Valid for ${env.OTP_EXPIRY_MINUTES} mins. Do NOT share this code.`,
+    `Your Safi Kicks verification code is: ${code}. Valid for ${env.OTP_EXPIRY_MINUTES} mins. Do NOT share this code.`,
 
   /**
    * Job registered confirmation (sent after job creation).
    */
   jobRegistered: (jobNumber, link) =>
-    `SoleCare: Job ${jobNumber} registered. Track your repair: ${link}`,
+    `Safi Kicks: Job ${jobNumber} registered. Track your repair: ${link}`,
 
   /**
    * Price proposed — customer must confirm via link.
    */
   priceProposed: (jobNumber, amount, link) =>
-    `SoleCare: Your repair quote for job ${jobNumber} is KES ${amount}. Confirm or decline: ${link}`,
+    `Safi Kicks: Your repair quote for job ${jobNumber} is KES ${amount}. Confirm or decline: ${link}`,
 
   /**
    * Price confirmation reminder (72h timeout).
    */
   priceReminder: (jobNumber, link) =>
-    `SoleCare: Reminder — please confirm your repair price for job ${jobNumber}: ${link}`,
+    `Safi Kicks: Reminder — please confirm your repair price for job ${jobNumber}: ${link}`,
 
   /**
    * Revised price after On Hold.
    */
   revisedPrice: (jobNumber, reason, amount, link) =>
-    `SoleCare: Update on job ${jobNumber}: ${reason}. New price: KES ${amount}. Confirm: ${link}`,
+    `Safi Kicks: Update on job ${jobNumber}: ${reason}. New price: KES ${amount}. Confirm: ${link}`,
 
   /**
    * Job completed — shoes are ready.
    */
   jobCompleted: (jobNumber, balance) =>
     balance > 0
-      ? `SoleCare: Your shoes are ready! Job ${jobNumber}. Balance due: KES ${balance}. Please pay at collection.`
-      : `SoleCare: Your shoes are ready for collection! Job ${jobNumber}. No balance due.`,
+      ? `Safi Kicks: Your shoes are ready! Job ${jobNumber}. Balance due: KES ${balance}. Please pay at collection.`
+      : `Safi Kicks: Your shoes are ready for collection! Job ${jobNumber}. No balance due.`,
 
   /**
    * Pickup code — CRITICAL: include do-not-share warning (SEC-05).
    * The code here is the PLAIN TEXT 6-digit code — sent only via SMS.
    */
   pickupCode: (code) =>
-    `SoleCare: Your pickup code is ${code}. Show this to staff when collecting. Do NOT share this code.`,
+    `Safi Kicks: Your pickup code is ${code}. Show this to staff when collecting. Do NOT share this code.`,
 
   /**
    * Abandoned goods reminder.
    */
   abandonedReminder: (jobNumber, daysLeft) =>
-    `SoleCare: Your shoes (job ${jobNumber}) are still with us. Please collect within ${daysLeft} days or they may be disposed of.`,
+    `Safi Kicks: Your shoes (job ${jobNumber}) are still with us. Please collect within ${daysLeft} days or they may be disposed of.`,
 
   /**
    * Owner/approver notification for out-of-band price.
    */
   approvalRequest: (jobNumber, amount, min, max, dashboardLink) =>
-    `SoleCare: Approval needed — job ${jobNumber} price KES ${amount} (band KES ${min}-${max}). Review: ${dashboardLink}`,
+    `Safi Kicks: Approval needed — job ${jobNumber} price KES ${amount} (band KES ${min}-${max}). Review: ${dashboardLink}`,
 };
 
 // ── High-level send helpers ───────────────────────────────────

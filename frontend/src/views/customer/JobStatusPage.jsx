@@ -324,7 +324,7 @@ export function JobStatusPage() {
           <div className="alert alert-info">
             <Clock size={16} style={{ flexShrink: 0, marginTop: 1 }} />
             <div>
-              <strong>Awaiting Drop-off:</strong> Please bring your shoes to SoleCare within 48 hours to activate the repair queue.
+              <strong>Awaiting Drop-off:</strong> Please bring your shoes to Safi Kicks within 48 hours to activate the repair queue.
             </div>
           </div>
         )}

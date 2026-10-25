@@ -21,7 +21,7 @@ This document must be reviewed and signed off prior to launching the Shoe Repair
   - Helmet enforces strict Content Security Policy (CSP).
   - Morgan switches to Apache-style combined access logs.
 - [ ] **Origin & Base URLs**:
-  - `APP_BASE_URL`: Set to the fully qualified domain (e.g., `https://repair.solecare.co.ke`). This is used when generating tracking and price confirmation links dispatched via SMS.
+  - `APP_BASE_URL`: Set to the fully qualified domain (e.g., `https://repair.safikicks.co.ke`). This is used when generating tracking and price confirmation links dispatched via SMS.
   - `CORS_ORIGIN`: Match the exact public domain of the application.
 
 ---
@@ -32,16 +32,16 @@ This document must be reviewed and signed off prior to launching the Shoe Repair
 > The default development passwords MUST be changed immediately upon first deployment!
 
 - [ ] **Rotate Owner Password**:
-  1. Log into the Owner Dashboard using `owner@solecare.co.ke` / `ChangeMe123!`.
+  1. Log into the Owner Dashboard using `owner@safikicks.co.ke` / `ChangeMe123!`.
   2. Navigate to **Staff Management**.
   3. Reset the owner password or execute an updated bcrypt hash directly in PostgreSQL:
      ```bash
      node -e "console.log(require('bcrypt').hashSync('YourNewStrongPassword', 12))"
      ```
 - [ ] **Verify Staff Accounts**:
-  - Update `grace@solecare.co.ke` (Counter Staff) password.
-  - Update `joseph@solecare.co.ke` (Repairer) password.
-  - Deactivate any unused demo accounts (`repairer2@solecare.co.ke`).
+  - Update `grace@safikicks.co.ke` (Counter Staff) password.
+  - Update `joseph@safikicks.co.ke` (Repairer) password.
+  - Deactivate any unused demo accounts (`repairer2@safikicks.co.ke`).
 
 ---
 
@@ -51,7 +51,7 @@ This document must be reviewed and signed off prior to launching the Shoe Repair
 - [ ] **Audit Trail Immutability**: Run `backend/test_immutability.sql` or test directly in `psql` to verify that `UPDATE` and `DELETE` on `job_events` are strictly rejected by PostgreSQL triggers.
 - [ ] **Automated Backups**: Configure a daily cron job to run `pg_dump`:
   ```bash
-  0 2 * * * docker exec -t kelvin_postgres pg_dump -U postgres kelvin_shoe_repair | gzip > /backups/solecare_$(date +\%F).sql.gz
+  0 2 * * * docker exec -t kelvin_postgres pg_dump -U postgres kelvin_shoe_repair | gzip > /backups/safikicks_$(date +\%F).sql.gz
   ```
 - [ ] **Retention Policy**: Retain daily database dumps for at least 30 days and monthly backups for 1 year offsite (e.g. AWS S3 or GCP Cloud Storage).
 

@@ -46,7 +46,7 @@ export function CustomerLayout() {
             fontSize: 'var(--font-size-md)',
             letterSpacing: 'var(--letter-spacing-tight)',
           }}>
-            SoleCare
+            Safi Kicks
           </span>
         </Link>
         <span style={{
@@ -76,7 +76,7 @@ export function CustomerLayout() {
         fontSize: 'var(--font-size-xs)',
         color: 'var(--color-text-tertiary)',
       }}>
-        <p>SoleCare Shoe Repair & Care • All Rights Reserved</p>
+        <p>Safi Kicks Shoe Repair & Care • All Rights Reserved</p>
       </footer>
     </div>
   );

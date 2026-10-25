@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import { setAuthToken, clearAuthToken, getErrorMessage } from '../api/client';
 import { authApi } from '../api/auth.api';
 
-const TOKEN_KEY = 'solecare_token';
+const TOKEN_KEY = 'safikicks_token';
+const LEGACY_TOKEN_KEY = 'solecare_token';
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -13,7 +14,7 @@ export const useAuthStore = create((set, get) => ({
 
   // Initialize from storage on app load
   initAuth: async () => {
-    const savedToken = localStorage.getItem(TOKEN_KEY);
+    const savedToken = localStorage.getItem(TOKEN_KEY) || localStorage.getItem(LEGACY_TOKEN_KEY);
     if (!savedToken) {
       set({ isLoading: false, isAuthenticated: false, user: null, token: null });
       return;
@@ -31,6 +32,7 @@ export const useAuthStore = create((set, get) => ({
       });
     } catch (err) {
       localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(LEGACY_TOKEN_KEY);
       clearAuthToken();
       set({
         token: null,
@@ -78,6 +80,7 @@ export const useAuthStore = create((set, get) => ({
       // Ignore network failures on logout
     } finally {
       localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(LEGACY_TOKEN_KEY);
       clearAuthToken();
       set({
         user: null,

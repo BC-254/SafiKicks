@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { CheckCircle, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 // Toast.jsx — bottom-right notification stack, auto-dismiss
@@ -28,8 +28,36 @@ export function ToastProvider({ children }) {
     info:    <Info size={16} />,
   };
 
+  const contextValue = useMemo(() => {
+    const success = (msg, dur) => add(msg, 'success', dur);
+    const error   = (msg, dur) => add(msg, 'error',   dur ?? 6000);
+    const warning = (msg, dur) => add(msg, 'warning', dur);
+    const info    = (msg, dur) => add(msg, 'info',    dur);
+
+    const addToast = (optsOrMsg, type = 'info', dur) => {
+      if (typeof optsOrMsg === 'object' && optsOrMsg !== null) {
+        const fullMsg = optsOrMsg.title && optsOrMsg.message
+          ? `${optsOrMsg.title}: ${optsOrMsg.message}`
+          : optsOrMsg.title || optsOrMsg.message || '';
+        return add(fullMsg, optsOrMsg.type || 'info', optsOrMsg.duration);
+      }
+      return add(optsOrMsg, type, dur);
+    };
+
+    return {
+      add,
+      remove,
+      dismiss: remove,
+      success,
+      error,
+      warning,
+      info,
+      addToast,
+    };
+  }, [add, remove]);
+
   return (
-    <ToastContext.Provider value={{ add, remove }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
       <div className="toast-container">
         {toasts.map((t) => (
@@ -52,12 +80,5 @@ export function ToastProvider({ children }) {
 export function useToast() {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error('useToast must be used within ToastProvider');
-  const { add, remove } = ctx;
-  return {
-    success: (msg, dur) => add(msg, 'success', dur),
-    error:   (msg, dur) => add(msg, 'error',   dur ?? 6000),
-    warning: (msg, dur) => add(msg, 'warning', dur),
-    info:    (msg, dur) => add(msg, 'info',    dur),
-    dismiss: remove,
-  };
+  return ctx;
 }

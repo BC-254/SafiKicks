@@ -353,19 +353,19 @@ VALUES
   (
     'Shop Owner',
     'owner',
-    'owner@solecare.co.ke',
+    'owner@safikicks.co.ke',
     '$2b$12$Zr/Aa9vz2690c1xEpFcst.t7HzqXTAbB21CGcXTmG33jGJ87ZSu1K'
   ),
   (
     'Grace Counter',
     'counter_staff',
-    'grace@solecare.co.ke',
+    'grace@safikicks.co.ke',
     '$2b$10$LTLLi1NOiKTT.b4tvrf.cef5a6mTkLLGilpnL7IQwDP1IkQxZRY8i'
   ),
   (
     'Joseph Repairer',
     'repairer',
-    'joseph@solecare.co.ke',
+    'joseph@safikicks.co.ke',
     '$2b$12$JshRLJx8vpP/OkJgNS2xjuptK4jceuFVqv1ppU5L.7sk88De2I6fq'
   )
 ON CONFLICT (email) DO NOTHING;

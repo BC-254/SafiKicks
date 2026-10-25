@@ -371,7 +371,7 @@ export function RegisterPage() {
                 required
               />
               <label htmlFor="consentCheck" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>
-                I agree to SoleCare collecting my name, phone number, and intake photos for repair tracking, quote confirmations, and secure release verification.
+                I agree to Safi Kicks collecting my name, phone number, and intake photos for repair tracking, quote confirmations, and secure release verification.
               </label>
             </div>
 

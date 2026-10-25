@@ -102,7 +102,7 @@ export function OwnerLayout() {
           </div>
           <div>
             <div style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-base)', lineHeight: 1.2 }}>
-              SoleCare
+              Safi Kicks
             </div>
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>
               Owner Control Center
@@ -215,7 +215,7 @@ export function OwnerLayout() {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-          <span style={{ fontWeight: 'var(--font-weight-bold)' }}>SoleCare Owner</span>
+          <span style={{ fontWeight: 'var(--font-weight-bold)' }}>Safi Kicks Owner</span>
           <button
             onClick={handleLogout}
             style={{

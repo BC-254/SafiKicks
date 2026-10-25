@@ -1,4 +1,4 @@
-# SoleCare — Shoe Repair Job Tracking & Revenue Control System
+# Safi Kicks — Shoe Repair Job Tracking & Revenue Control System
 
 A high-reliability, security-hardened web platform designed for premium shoe repair and restoration enterprises. It coordinates customer intake, repair tracking, pricing approvals, M-Pesa/cash payment ledgers, and secure OTP-verified customer pickups.
 
@@ -6,7 +6,7 @@ A high-reliability, security-hardened web platform designed for premium shoe rep
 
 ## 🎨 Apple-Inspired Design Philosophy
 
-SoleCare is purposefully styled with a native, calm, and restrained aesthetic that mirrors Apple's design language:
+Safi Kicks is purposefully styled with a native, calm, and restrained aesthetic that mirrors Apple's design language:
 - **Surfaces & Palettes**: Pure off-white backgrounds (`#F5F5F7`, `#FFFFFF`), deep slate primary typography (`#1D1D1F`), and a single restrained CTA accent (`#0071E3`).
 - **Components**: Pill-shaped action buttons (`border-radius: 980px`), flat cards with subtle elevation (`border-radius: 18px`, `box-shadow: 0 2px 12px rgba(0,0,0,0.07)`), and desaturated status badges.
 - **Micro-Interactions**: Subtle, organic presses (`scale(0.98)`).
@@ -135,9 +135,9 @@ All seeded accounts are initialized with real bcrypt hashes in `database/schema.
 
 | Role | Email | Password | Access Area |
 |------|-------|----------|-------------|
-| **Owner** | `owner@solecare.co.ke` | `ChangeMe123!` | `/owner/*` (Approvals, Reports, Day-Close, Staff, Catalog, Audit) |
-| **Counter Staff** | `grace@solecare.co.ke` | `CounterStaff123!` | `/counter/*` (Intake, Tagging, Payments, OTP Pickup Release) |
-| **Repairer** | `joseph@solecare.co.ke` | `SecureRepairer123!` | `/repairer/*` (Queue, Claim, Price Proposals, Work Completion) |
+| **Owner** | `owner@safikicks.co.ke` | `ChangeMe123!` | `/owner/*` (Approvals, Reports, Day-Close, Staff, Catalog, Audit) |
+| **Counter Staff** | `grace@safikicks.co.ke` | `CounterStaff123!` | `/counter/*` (Intake, Tagging, Payments, OTP Pickup Release) |
+| **Repairer** | `joseph@safikicks.co.ke` | `SecureRepairer123!` | `/repairer/*` (Queue, Claim, Price Proposals, Work Completion) |
 
 ---
 
@@ -192,4 +192,4 @@ The repository contains automated verification suites:
 
 ## 📄 License & Intellectual Property
 
-Proprietary and Confidential. Developed for Kelvin Shoe Repair & SoleCare Enterprises.
+Proprietary and Confidential. Developed for Kelvin Shoe Repair & Safi Kicks Enterprises.

@@ -80,7 +80,7 @@ export function StaffLayout() {
           </div>
           <div>
             <div style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-base)', lineHeight: 1.2 }}>
-              SoleCare
+              Safi Kicks
             </div>
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>
               Staff Portal
@@ -161,7 +161,7 @@ export function StaffLayout() {
           justifyContent: 'space-between',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <span style={{ fontWeight: 'var(--font-weight-bold)' }}>SoleCare</span>
+            <span style={{ fontWeight: 'var(--font-weight-bold)' }}>Safi Kicks</span>
             <RoleBadge role={user?.role} />
           </div>
           <button

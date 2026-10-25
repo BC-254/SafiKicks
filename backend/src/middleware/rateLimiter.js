@@ -5,6 +5,7 @@
  */
 
 const rateLimit = require('express-rate-limit');
+const env = require('../config/env');
 
 /**
  * Standard JSON response for rate-limit exceeded responses.
@@ -17,10 +18,10 @@ const rateLimitHandler = (req, res) => {
 };
 
 // ── Global API limiter (applied to all /api routes) ───────────
-// 200 requests per 15 minutes per IP
+// 200 requests per 15 minutes in production; 2000 in dev
 const globalLimiter = rateLimit({
   windowMs:        15 * 60 * 1000,
-  max:             200,
+  max:             env.IS_PROD ? 200 : 2000,
   standardHeaders: true,
   legacyHeaders:   false,
   handler:         rateLimitHandler,

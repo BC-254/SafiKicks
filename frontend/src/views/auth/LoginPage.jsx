@@ -78,7 +78,7 @@ export function LoginPage() {
             Staff Sign In
           </h1>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', marginTop: 'var(--space-1)' }}>
-            SoleCare Shoe Repair & Revenue Control
+            Safi Kicks Shoe Repair & Revenue Control
           </p>
         </div>
 
