@@ -12,17 +12,28 @@
 
 'use strict';
 
-require('dotenv').config({ path: __dirname + '/backend/.env' });
-
-let pg;
-try {
-  pg = require('pg');
-} catch {
-  pg = require(path.join(__dirname, 'backend', 'node_modules', 'pg'));
-}
-const { Client } = pg;
 const fs = require('fs');
 const path = require('path');
+
+// Load dotenv if available (for local dev; in Render, env vars are in process.env)
+try {
+  require('dotenv').config({ path: path.join(__dirname, 'backend', '.env') });
+} catch {
+  try {
+    require(path.join(__dirname, 'backend', 'node_modules', 'dotenv')).config({
+      path: path.join(__dirname, 'backend', '.env'),
+    });
+  } catch {
+    // In production environments (Render), process.env is injected directly
+  }
+}
+
+let Client;
+try {
+  Client = require('pg').Client;
+} catch {
+  Client = require(path.join(__dirname, 'backend', 'node_modules', 'pg')).Client;
+}
 
 const schemaPath = path.join(__dirname, 'database', 'schema.sql');
 
