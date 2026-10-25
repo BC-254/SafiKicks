@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "SafiKicks — Shoe Care & Repair Operations Platform",
   "scripts": {
-    "build": "npm --prefix frontend install && npm --prefix frontend run build && npm --prefix backend install",
+    "build": "npm --prefix frontend install --include=dev && npm --prefix frontend run build && npm --prefix backend install",
     "start": "node migrate.js && node backend/src/app.js"
   },
   "keywords": [],
